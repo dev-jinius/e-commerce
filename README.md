@@ -230,7 +230,7 @@ sequenceDiagram
 
 ### 1-3 ERD 설계
 * ERD 작성
-  ![image](https://github.com/dev-jinius/e-commerce/assets/161837399/e372bc40-d22f-4b04-91d1-f185ff804673)
+  ![이커머스](https://github.com/user-attachments/assets/38f6bd8b-6191-413e-b9bf-d5b4c85324e0)
 
 
 ## 2. API 개발
