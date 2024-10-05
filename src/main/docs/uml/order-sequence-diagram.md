@@ -35,7 +35,7 @@ sequenceDiagram
         app->>order: 주문 상태 업데이트 요청
         order->>order: 주문 상태 'PAID'로 업데이트
         order->>+db: 주문 상태 업데이트(PAID)
-        db-->>-order: 주문 정보(주문서) 반환
+        db-->>order: 주문 정보(주문서) 반환
         
         app->>+stock: 재고 조회 요청
         stock->>+db: 재고 조회
@@ -44,29 +44,32 @@ sequenceDiagram
         alt 재고 수량 >= 주문 상품 수량
             stock->>stock: 재고 차감
             stock-->>app: 재고 차감 성공
-            app->>+order: 주문 상태 업데이트 요청
+            app->>order: 주문 상태 업데이트 요청
             order->>order: 주문 상태 'COMPLETE'로 업데이트
             order->>+db: 주문 상태 업데이트(COMPLETE)
             db-->>-order: 주문 정보(주문서) 반환
+            order-->>app: 주문 성공
             app->>+api: 주문 정보 전송
             app-->>c: 주문 성공 응답
             api-->>-app: (비동기) 처리 중..
         else 재고 수량 < 주문 상품 수량
             stock-->>-app: 재고 차감 실패
-            app->>+order: 주문 상태 업데이트 요청
+            app->>order: 주문 상태 업데이트 요청
             order->>order: 주문 상태 'CANCELED'로 업데이트 요청
             order->>+db: 주문 상태 업데이트(CANCELED)
             db-->>-order: 주문 정보(주문서) 반환
+            order-->>app: 주문 실패
             app-->>c: 주문 실패 응답 (재고 부족)
         end
         
     else 잔액 포인트 < 주문 금액
         user-->>pay: 포인트 부족 예외
-        pay-->>app: 포인트 결제 실패
-        app->>+order: 주문 상태 업데이트 요청
+        pay-->>-app: 포인트 결제 실패
+        app->>order: 주문 상태 업데이트 요청
         order->>order: 주문 상태 'CANCELED'로 업데이트 요청
         order->>+db: 주문 상태 업데이트(CANCELED)
         db-->>-order: 주문 정보(주문서) 반환
-        app-->>c: 주문 실패 응답 (포인트 부족)
+        order-->>-app: 주문 실패
+        app-->>-c: 주문 실패 응답 (포인트 부족)
     end
 ```
