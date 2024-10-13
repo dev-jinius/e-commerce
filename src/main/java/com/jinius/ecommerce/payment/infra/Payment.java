@@ -26,6 +26,16 @@ public class Payment {
 
     private BigInteger point;
 
+    /**
+     * 결제 상태 [PENDING, PAID, FAILED, REFUNDED, PARTIAL_REFUND]
+     *  PENDING - 결제 대기
+     *  PAID - 결제 완료
+     *  FAILED - 결제 실패
+     *  REFUNDED - 전체 환불
+     *  PARTIAL_REFUND - 부분 환불
+     */
+    private String status;
+
     @CreatedDate
     private LocalDateTime createAt;
 }
