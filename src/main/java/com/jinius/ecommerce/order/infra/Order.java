@@ -3,6 +3,7 @@ package com.jinius.ecommerce.order.infra;
 import com.jinius.ecommerce.user.infra.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigInteger;
@@ -31,19 +32,29 @@ public class Order {
     private Long userId;
 
     /**
-     * 주문 상태 [CANCLE, DONE]
+     * 주문 상태 [PENDING, PAID, COMPLETED, CANCELED, PARTIAL_REFUND]
+     *  PENDING - 대기중
+     *  PAID - 결제 완료
+     *  COMPLETED - 주문 완료
+     *  CANCELED - 주문 취소
+     *  PARTIAL_REFUND - 부분 환불/취소
      */
-    private String orderStatus;
+    private String status;
 
     /**
      * 총 주문 가격
      */
     @Column(columnDefinition = "BIGINT")
-    private BigInteger orderPrice;
+    private BigInteger totalPrice;
 
     /**
      * 주문 시간
      */
     @CreatedDate
-    private LocalDateTime orderedAt;
+    private LocalDateTime createdAt;
+
+    /**
+     * 상태 업데이트 시간
+     */
+    private LocalDateTime updatedAt;
 }
