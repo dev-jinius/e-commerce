@@ -234,5 +234,5 @@ sequenceDiagram
 
 
 ## 2. API 개발
-### 2-1 Swagger 작성
-
+### 2-1 Swagger 접속
+ - 로컬 : http://localhost:8080/swagger-ui/index.html
