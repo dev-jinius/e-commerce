@@ -17,6 +17,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        return ResponseEntity.internalServerError().body(new ErrorResponse("ERR-00","서버 오류"));
+        return ResponseEntity.internalServerError().body(new ErrorResponse("ERR-00","서버 오류. 관리자에게 문의해주세요."));
     }
 }
