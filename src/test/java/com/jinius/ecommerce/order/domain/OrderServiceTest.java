@@ -4,6 +4,7 @@ import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.api.OrderItemRequest;
 import com.jinius.ecommerce.order.api.OrderRequest;
+import com.jinius.ecommerce.payment.domain.StubPaymentService;
 import com.jinius.ecommerce.user.domain.StubUserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,12 @@ class OrderServiceTest {
 
     private final OrderService sut;
     private final StubUserService stubUserService;
+    private final StubPaymentService stubPaymentService;
 
     OrderServiceTest() {
         stubUserService = new StubUserService();
-        this.sut = new OrderService(stubUserService);
+        stubPaymentService = new StubPaymentService();
+        this.sut = new OrderService(stubUserService, stubPaymentService);
     }
 
     @Test
@@ -68,5 +71,31 @@ class OrderServiceTest {
         assert orderSheet != null;
         assert orderSheet.getUserId() == 1L;
         assert orderSheet.getPaymentType().equals("POINT");
+    }
+
+    @Test
+    @DisplayName("주문 요청 시 포인트 부족으로 주문 실패")
+    void createOrder_pointNotEnough_failed() {
+        //given
+        OrderRequest request = new OrderRequest(
+                1L,
+                List.of(
+                        new OrderItemRequest(1L, BigInteger.valueOf(49900), 1L),
+                        new OrderItemRequest(3L, BigInteger.valueOf(30000), 2L)
+                )
+        );
+
+        //when
+        Throwable exception = null;
+        try {
+            sut.createOrder(request);
+        } catch (EcommerceException e) {
+            exception = e;
+        }
+
+        //then
+        assert exception != null;
+        assert exception instanceof EcommerceException;
+        assert ((EcommerceException) exception).getErrorCode() == ErrorCode.NOT_ENOUGH_POINT;
     }
 }

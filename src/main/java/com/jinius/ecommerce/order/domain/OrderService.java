@@ -1,6 +1,7 @@
 package com.jinius.ecommerce.order.domain;
 
 import com.jinius.ecommerce.order.api.OrderRequest;
+import com.jinius.ecommerce.payment.domain.StubPaymentService;
 import com.jinius.ecommerce.user.domain.StubUserService;
 import com.jinius.ecommerce.user.domain.User;
 
@@ -8,9 +9,11 @@ import com.jinius.ecommerce.user.domain.User;
 public class OrderService {
 
     private final StubUserService stubUserService;
+    private final StubPaymentService stubPaymentService;
 
-    public OrderService(StubUserService stubUserService) {
+    public OrderService(StubUserService stubUserService, StubPaymentService stubPaymentService) {
         this.stubUserService = stubUserService;
+        this.stubPaymentService = stubPaymentService;
     }
 
     public OrderSheet createOrder(OrderRequest request) {
@@ -20,6 +23,9 @@ public class OrderService {
         //주문서 생성
         OrderSheet orderSheet = OrderSheet.from(request);
         orderSheet.log();
+
+        //잔액(포인트) 확인
+        stubUserService.comparePoint(orderSheet.getTotalPrice());
 
         //결제
 
