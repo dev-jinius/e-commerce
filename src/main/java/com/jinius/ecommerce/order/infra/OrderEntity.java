@@ -1,14 +1,11 @@
 package com.jinius.ecommerce.order.infra;
 
-import com.jinius.ecommerce.user.infra.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "tb_orders")
@@ -16,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Builder
-public class Order {
+public class OrderEntity {
 
     /**
      * 주문 ID (PK)

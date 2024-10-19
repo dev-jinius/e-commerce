@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Builder
-public class OrderItem {
+public class OrderItemEntity {
     /**
      * 주문 상품 ID
      */

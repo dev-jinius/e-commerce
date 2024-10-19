@@ -2,6 +2,7 @@ package com.jinius.ecommerce.order.domain;
 
 import com.jinius.ecommerce.order.api.OrderRequest;
 import com.jinius.ecommerce.user.domain.StubUserService;
+import com.jinius.ecommerce.user.domain.User;
 
 //@Service
 public class OrderService {
@@ -12,11 +13,18 @@ public class OrderService {
         this.stubUserService = stubUserService;
     }
 
-    //주문서 생성
-    public void createOrder(OrderRequest request) {
+    public OrderSheet createOrder(OrderRequest request) {
         //유저 확인
-        stubUserService.checkUser(request.getUserId());
+        User user = stubUserService.validateUserByUserId(request.getUserId());
 
         //주문서 생성
+        OrderSheet orderSheet = OrderSheet.from(request);
+        orderSheet.log();
+
+        //결제
+
+        //재고 처리
+
+        return orderSheet;
     }
 }
