@@ -4,6 +4,7 @@ import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.api.OrderItemRequest;
 import com.jinius.ecommerce.order.api.OrderRequest;
+import com.jinius.ecommerce.order.infra.StubOrderRepository;
 import com.jinius.ecommerce.payment.domain.StubPaymentService;
 import com.jinius.ecommerce.user.domain.StubUserService;
 import org.junit.jupiter.api.DisplayName;
@@ -14,17 +15,20 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.when;
 
 class OrderServiceTest {
 
     private final OrderService sut;
     private final StubUserService stubUserService;
     private final StubPaymentService stubPaymentService;
+    private final StubOrderRepository stubOrderRepository;
 
     OrderServiceTest() {
         stubUserService = new StubUserService();
         stubPaymentService = new StubPaymentService();
-        this.sut = new OrderService(stubUserService, stubPaymentService);
+        stubOrderRepository = new StubOrderRepository();
+        this.sut = new OrderService(stubUserService, stubPaymentService, stubOrderRepository);
     }
 
     @Test
