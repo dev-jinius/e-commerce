@@ -6,6 +6,7 @@ import com.jinius.ecommerce.order.api.OrderItemRequest;
 import com.jinius.ecommerce.order.api.OrderRequest;
 import com.jinius.ecommerce.order.infra.StubOrderRepository;
 import com.jinius.ecommerce.payment.domain.StubPaymentService;
+import com.jinius.ecommerce.product.domain.StubProductService;
 import com.jinius.ecommerce.user.domain.StubUserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,20 +16,21 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.when;
 
 class OrderServiceTest {
 
     private final OrderService sut;
     private final StubUserService stubUserService;
     private final StubPaymentService stubPaymentService;
+    private final StubProductService stubProductService;
     private final StubOrderRepository stubOrderRepository;
 
     OrderServiceTest() {
         stubUserService = new StubUserService();
         stubPaymentService = new StubPaymentService();
+        stubProductService = new StubProductService();
         stubOrderRepository = new StubOrderRepository();
-        this.sut = new OrderService(stubUserService, stubPaymentService, stubOrderRepository);
+        this.sut = new OrderService(stubUserService, stubPaymentService, stubProductService, stubOrderRepository);
     }
 
     @Test
@@ -64,17 +66,16 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(
                 1L,
                 List.of(
-                    new OrderItemRequest(1L, BigInteger.valueOf(49900), 1L),
-                    new OrderItemRequest(3L, BigInteger.valueOf(30000), 2L)
+                    new OrderItemRequest(1L, BigInteger.valueOf(49900), 1L)
                 )
         );
 
         // when & then
-        OrderSheet orderSheet = sut.createOrder(request);
+        Order order = sut.createOrder(request);
 
-        assert orderSheet != null;
-        assert orderSheet.getUserId() == 1L;
-        assert orderSheet.getPaymentType().equals("POINT");
+        assert order != null;
+        assert order.getUserId() == 1L;
+        assert order.getPaymentType().equals("POINT");
     }
 
     @Test
@@ -115,10 +116,10 @@ class OrderServiceTest {
         );
 
         // when & then
-        OrderSheet orderSheet = sut.createOrder(request);
+        Order order = sut.createOrder(request);
 
-        assert orderSheet != null;
-        assert orderSheet.getUserId() == 1L;
-        assert orderSheet.getPaymentType().equals("POINT");
+        assert order != null;
+        assert order.getUserId() == 1L;
+        assert order.getPaymentType().equals("POINT");
     }
 }
