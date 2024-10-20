@@ -25,7 +25,7 @@ public class OrderService {
         orderSheet.log();
 
         //잔액(포인트) 확인
-        stubUserService.comparePoint(orderSheet.getTotalPrice());
+        stubUserService.comparePoint(user, orderSheet.getTotalPrice());
 
         //결제
 

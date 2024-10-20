@@ -98,4 +98,23 @@ class OrderServiceTest {
         assert exception instanceof EcommerceException;
         assert ((EcommerceException) exception).getErrorCode() == ErrorCode.NOT_ENOUGH_POINT;
     }
+
+    @Test
+    @DisplayName("주문 요청 시 포인트 잔액이 주문 금액보다 많은 경우 주문서 생성 성공")
+    void createOrder_enoughPoint_success() {
+        //given
+        OrderRequest request = new OrderRequest(
+                1L,
+                List.of(
+                        new OrderItemRequest(1L, BigInteger.valueOf(49900), 1L)
+                )
+        );
+
+        // when & then
+        OrderSheet orderSheet = sut.createOrder(request);
+
+        assert orderSheet != null;
+        assert orderSheet.getUserId() == 1L;
+        assert orderSheet.getPaymentType().equals("POINT");
+    }
 }

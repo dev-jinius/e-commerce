@@ -16,9 +16,9 @@ public class StubUserService {
         throw new EcommerceException(NOT_FOUND_USER);
     }
 
-    public void comparePoint(BigInteger point) {
-        BigInteger dbPoint = BigInteger.valueOf(50000);
-        if (dbPoint.compareTo(point) < 0)
+    public void comparePoint(User user, BigInteger orderPrice) {
+        user.setPoint(BigInteger.valueOf(50000));
+        if (user.getPoint().compareTo(orderPrice) < 0)
             throw new EcommerceException(ErrorCode.NOT_ENOUGH_POINT);
     }
 }
