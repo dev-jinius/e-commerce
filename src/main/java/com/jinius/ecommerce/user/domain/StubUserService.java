@@ -2,11 +2,13 @@ package com.jinius.ecommerce.user.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
+import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 
 import static com.jinius.ecommerce.common.ErrorCode.NOT_FOUND_USER;
 
+@Service
 public class StubUserService {
 
     public User validateUserByUserId(Long userId) {

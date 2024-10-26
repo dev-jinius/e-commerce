@@ -4,10 +4,14 @@ import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.Order;
 import com.jinius.ecommerce.user.domain.User;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigInteger;
 
+import static com.jinius.ecommerce.order.domain.OrderStatus.PENDING;
+
+@Service
 public class StubPaymentService {
 
     public void pay(User user, Order order) {
@@ -20,7 +24,7 @@ public class StubPaymentService {
         if (order.getTotalPrice().compareTo(BigInteger.ZERO) <= 0)
             throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
 
-        if (!order.getOrderStatus().equals("PENDING"))
+        if (order.getOrderStatus() != PENDING)
             throw new EcommerceException(ErrorCode.ALREADY_PAID_ORDER);
 
         //포인트 차감

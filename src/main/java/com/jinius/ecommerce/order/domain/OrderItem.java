@@ -19,7 +19,7 @@ public class OrderItem {
     private BigInteger productPrice;
     private BigInteger totalPrice;
     private Long quantity;
-    private String status;
+    private OrderItemStatus status;
 
     public OrderItem(Long productId, BigInteger productPrice, Long quantity) {
         this.productId = productId;

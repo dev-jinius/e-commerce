@@ -3,10 +3,12 @@ package com.jinius.ecommerce.product.domain;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.OrderItem;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
+@Service
 public class StubProductService {
 
     public void decreaseStock(List<OrderItem> orderItems) {

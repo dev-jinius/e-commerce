@@ -9,22 +9,30 @@ import com.jinius.ecommerce.payment.domain.StubPaymentService;
 import com.jinius.ecommerce.product.domain.StubProductService;
 import com.jinius.ecommerce.user.domain.StubUserService;
 import com.jinius.ecommerce.user.domain.User;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Service
+import static com.jinius.ecommerce.order.domain.OrderStatus.*;
+
+@Service
 public class OrderService {
     private final StubUserService stubUserService;          //유저 서비스
     private final StubPaymentService stubPaymentService;    //결제 서비스
     private final StubProductService stubProductService;    //상품 서비스
-    private final StubOrderRepository stubOrderRepository;
+    private final OrderRepository orderRepository;
 
-    public OrderService(StubUserService stubUserService, StubPaymentService stubPaymentService, StubProductService stubProductService, StubOrderRepository stubOrderRepository) {
+    public OrderService(StubUserService stubUserService, StubPaymentService stubPaymentService, StubProductService stubProductService, OrderRepository orderRepository) {
         this.stubUserService = stubUserService;
         this.stubPaymentService = stubPaymentService;
         this.stubProductService = stubProductService;
-        this.stubOrderRepository = stubOrderRepository;
+        this.orderRepository = orderRepository;
     }
 
+    /**
+     * 주문 생성
+     * @param request OrderRequest
+     * @return Order
+     */
     @Transactional
     public Order createOrder(OrderRequest request) {
 
@@ -34,7 +42,7 @@ public class OrderService {
         //주문서 생성
         OrderSheet orderSheet = OrderSheet.from(request);
         orderSheet.log();
-        Order order = stubOrderRepository.create(orderSheet);
+        Order order = orderRepository.create(orderSheet);
 
         try {
             //잔액(포인트) 확인
@@ -42,27 +50,36 @@ public class OrderService {
 
             //결제
             stubPaymentService.pay(user, order);
-            order = updateOrderStatus(order, "PAID");
+            order = updateOrderStatus(order, PAID);
 
             //재고 처리
             stubProductService.decreaseStock(orderSheet.getOrderItems());
-            order = updateOrderStatus(order, "COMPLETED");
+            order = updateOrderStatus(order, COMPLETED);
 
             return order;
         } catch (EcommerceException e) {
-            return updateOrderStatus(order, "CANCELED");
+            order = updateOrderStatus(order, CANCELED);
+//            System.out.println("order.getOrderStatus() = " + order.getOrderStatus());
+            throw e;
         }
     }
 
-    public Order updateOrderStatus(Order order, String status) {
+    /**
+     * 주문 상태 값 변경
+     * @param order
+     * @param status
+     * @return Order
+     */
+    public Order updateOrderStatus(Order order, OrderStatus status) {
         if (
-            (status.equals("PAID") && !order.getOrderStatus().equals("PENDING")) ||
-            (status.equals("COMPLETED") && !order.getOrderStatus().equals("PAID"))
+            (status == PAID && order.getOrderStatus() != PENDING) ||
+            (status == COMPLETED && order.getOrderStatus() != PAID)
         ) {
             throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
         }
 
         order.setOrderStatus(status);
-        return stubOrderRepository.updateStatus(order);
+        orderRepository.updateStatus(order);
+        return order;
     }
 }

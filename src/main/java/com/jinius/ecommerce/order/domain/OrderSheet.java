@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.jinius.ecommerce.order.domain.OrderStatus.PENDING;
+
 /**
  * 주문서 (주문 요청 정보)
  */
@@ -21,7 +23,7 @@ public class OrderSheet {
     private List<OrderItem> orderItems;         //주문상품 리스트
     private String paymentType;                 //지불 타입 (POINT, CARD, CASH)
     private BigInteger totalPrice;              //총 주문금액
-    private String orderStatus;                 //주문 상태
+    private OrderStatus orderStatus;                 //주문 상태
     
     //현재 포인트 결제만 가능
     public static OrderSheet from(OrderRequest request) {
@@ -29,7 +31,7 @@ public class OrderSheet {
                 .map(item -> new OrderItem(item.getProductId(), item.getPrice(), item.getQuantity()))
                 .collect(Collectors.toList());
 
-        return new OrderSheet(request.getUserId(), orderItems, "POINT", calculateOrderTotalPrice(orderItems), "PENDING");
+        return new OrderSheet(request.getUserId(), orderItems, "POINT", calculateOrderTotalPrice(orderItems), PENDING);
     }
 
     //총 주문금액 계산

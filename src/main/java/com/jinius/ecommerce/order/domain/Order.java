@@ -1,9 +1,6 @@
 package com.jinius.ecommerce.order.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -15,13 +12,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class Order {
     private Long orderId;
     private Long userId;
     private List<OrderItem> orderItems;
     private String paymentType;
     private BigInteger totalPrice;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private LocalDateTime orderDate;
 
     public BigInteger calculateTotalPrice() {
