@@ -49,6 +49,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.27'
 	testImplementation 'org.testcontainers:mariadb'
 }
 
