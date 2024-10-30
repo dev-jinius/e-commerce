@@ -11,7 +11,7 @@ import java.math.BigInteger;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Builder
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
