@@ -4,9 +4,10 @@ import com.jinius.ecommerce.order.domain.Order;
 import com.jinius.ecommerce.order.domain.OrderRepository;
 import com.jinius.ecommerce.order.domain.OrderSheet;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository @Primary
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepository {
 

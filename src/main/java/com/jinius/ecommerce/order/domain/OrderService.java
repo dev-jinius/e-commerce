@@ -1,32 +1,28 @@
 package com.jinius.ecommerce.order.domain;
 
-import com.jinius.ecommerce.EcommerceApplication;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.api.OrderRequest;
-import com.jinius.ecommerce.order.infra.StubOrderRepository;
 import com.jinius.ecommerce.payment.domain.StubPaymentService;
 import com.jinius.ecommerce.product.domain.StubProductService;
 import com.jinius.ecommerce.user.domain.StubUserService;
 import com.jinius.ecommerce.user.domain.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.jinius.ecommerce.order.domain.OrderStatus.*;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
     private final StubUserService stubUserService;          //유저 서비스
     private final StubPaymentService stubPaymentService;    //결제 서비스
     private final StubProductService stubProductService;    //상품 서비스
-    private final OrderRepository orderRepository;
 
-    public OrderService(StubUserService stubUserService, StubPaymentService stubPaymentService, StubProductService stubProductService, OrderRepository orderRepository) {
-        this.stubUserService = stubUserService;
-        this.stubPaymentService = stubPaymentService;
-        this.stubProductService = stubProductService;
-        this.orderRepository = orderRepository;
-    }
+    @Qualifier("orderRepositoryImpl")
+    private final OrderRepository orderRepository;
 
     /**
      * 주문 생성

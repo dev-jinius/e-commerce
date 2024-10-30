@@ -12,7 +12,6 @@ public class StubOrderRepository implements OrderRepository {
 
     private long idCounter = 1;
 
-    @Override
     public Order create(OrderSheet orderSheet) {
         return new Order(
             idCounter++,
@@ -25,7 +24,6 @@ public class StubOrderRepository implements OrderRepository {
         );
     }
 
-    @Override
     public void updateStatus(Order order) {
     }
 }
