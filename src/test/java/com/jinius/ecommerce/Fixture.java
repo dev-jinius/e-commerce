@@ -6,6 +6,7 @@ import com.jinius.ecommerce.order.domain.Order;
 import com.jinius.ecommerce.order.domain.OrderItem;
 import com.jinius.ecommerce.order.domain.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.OrderStatus;
+import com.jinius.ecommerce.payment.domain.Payment;
 import com.jinius.ecommerce.user.api.UserChargeRequest;
 import com.jinius.ecommerce.user.domain.User;
 import com.navercorp.fixturemonkey.ArbitraryBuilder;
@@ -13,6 +14,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.time.LocalTime.now;
@@ -31,6 +33,12 @@ public class Fixture {
     private static ArbitraryBuilder<Order> fixOrderId() {
         return fixtureMonkey.giveMeBuilder(Order.class)
                 .set("orderId", 1L);
+    }
+
+    private static ArbitraryBuilder<Payment> fixPointPayment() {
+        return fixtureMonkey.giveMeBuilder(Payment.class)
+                .set("type", "POINT")
+                .set("amount", BigInteger.ZERO);
     }
 
     public static User notExistUser() {
@@ -158,6 +166,60 @@ public class Fixture {
                 .set("paymentType", "POINT")
                 .set("totalPrice", BigInteger.valueOf(49900))
                 .set("orderStatus", OrderStatus.PENDING)
+                .sample();
+    }
+
+    public static Order orderUserId1WithTwoItem() {
+        List<OrderItem> orderItems = List.of(
+                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING),
+                new OrderItem(3L, "아노락", BigInteger.valueOf(40000), BigInteger.valueOf(80000), 2L, OrderItemStatus.PREPARING)
+        );
+
+        return fixOrderId()
+                .set("userId", 1L)
+                .set("orderItems", orderItems)
+                .set("paymentType", "POINT")
+                .set("totalPrice", BigInteger.valueOf(129900))
+                .set("orderStatus", OrderStatus.PENDING)
+                .sample();
+    }
+
+    public static Order orderNegativeOrderPrice() {
+        List<OrderItem> orderItems = List.of(
+                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING),
+                new OrderItem(3L, "아노락", BigInteger.valueOf(40000), BigInteger.valueOf(80000), 2L, OrderItemStatus.PREPARING)
+        );
+
+        return fixOrderId()
+                .set("userId", 1L)
+                .set("orderItems", orderItems)
+                .set("paymentType", "POINT")
+                .set("totalPrice", BigInteger.valueOf(-10000))
+                .set("orderStatus", OrderStatus.PENDING)
+                .sample();
+    }
+
+    public static Order orderNotPendingStatus() {
+        List<OrderItem> orderItems = List.of(
+                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING)
+        );
+
+        return fixOrderId()
+                .set("userId", 1L)
+                .set("orderItems", orderItems)
+                .set("paymentType", "POINT")
+                .set("totalPrice", BigInteger.valueOf(49900))
+                .set("orderStatus", OrderStatus.PAID)
+                .sample();
+    }
+
+    public static Payment paymentOrder(User user, Order order) {
+        return fixPointPayment()
+                .set("orderId", order.getOrderId())
+                .set("userId", user.getUserId())
+                .set("point", order.getTotalPrice())
+                .set("status", "PENDING")
+                .set("paidAt", LocalDateTime.now())
                 .sample();
     }
 }
