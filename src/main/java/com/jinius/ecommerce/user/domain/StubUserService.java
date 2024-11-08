@@ -25,3 +25,4 @@ public class StubUserService {
             throw new EcommerceException(ErrorCode.NOT_ENOUGH_POINT);
     }
 }
+
