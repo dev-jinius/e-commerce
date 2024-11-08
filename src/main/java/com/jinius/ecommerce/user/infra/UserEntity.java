@@ -1,5 +1,6 @@
 package com.jinius.ecommerce.user.infra;
 
+import com.jinius.ecommerce.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,4 +24,20 @@ public class UserEntity {
 
     @Column(nullable = false, columnDefinition = "BIGINT")
     private BigInteger point;
+
+    public static UserEntity fromDomain(User user) {
+        return UserEntity.builder()
+                .id(user.getUserId())
+                .name(user.getName())
+                .point(user.getPoint())
+                .build();
+    }
+
+    public User toDomain() {
+        return User.builder()
+                .userId(this.id)
+                .name(this.name)
+                .point(this.point)
+                .build();
+    }
 }
