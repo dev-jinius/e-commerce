@@ -2,10 +2,7 @@ package com.jinius.ecommerce.payment.domain;
 
 import com.jinius.ecommerce.order.domain.Order;
 import com.jinius.ecommerce.user.domain.User;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class Payment {
     private Long orderId;
     private Long userId;
@@ -20,7 +18,8 @@ public class Payment {
     private BigInteger amount;
     private BigInteger point;
     private String status;
-    private LocalDateTime paidAt;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
 
     public static Payment create(User user, Order order) {
         return new Payment(
@@ -30,6 +29,7 @@ public class Payment {
                 BigInteger.ZERO,
                 order.getTotalPrice(),
                 "PENDING",
+                LocalDateTime.now(),
                 LocalDateTime.now()
         );
     }

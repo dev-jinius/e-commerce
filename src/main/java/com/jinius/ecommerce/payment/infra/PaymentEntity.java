@@ -1,7 +1,8 @@
 package com.jinius.ecommerce.payment.infra;
 
+import com.jinius.ecommerce.payment.domain.Payment;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigInteger;
@@ -10,6 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tb_payment")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +42,32 @@ public class PaymentEntity {
 
     @CreatedDate
     private LocalDateTime createAt;
+
+    private LocalDateTime updateAt;
+
+    public static PaymentEntity fromDomain(Payment payment) {
+        return PaymentEntity.builder()
+                .orderId(payment.getOrderId())
+                .userId(payment.getUserId())
+                .type(payment.getType())
+                .amount(payment.getAmount())
+                .point(payment.getPoint())
+                .status(payment.getStatus())
+                .createAt(payment.getCreateAt())
+                .updateAt(payment.getUpdateAt())
+                .build();
+    }
+
+    public Payment toDomain() {
+        return Payment.builder()
+                .orderId(this.orderId)
+                .userId(this.userId)
+                .type(this.type)
+                .amount(this.amount)
+                .point(this.point)
+                .status(this.status)
+                .createAt(this.createAt)
+                .updateAt(this.updateAt)
+                .build();
+    }
 }
