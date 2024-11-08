@@ -16,4 +16,8 @@ public class User {
     public void addPoint(BigInteger chargePoint) {
         setPoint(this.point.add(chargePoint));
     }
+
+    public void subtractPoint(BigInteger price) {
+        setPoint(this.point.subtract(price));
+    }
 }
