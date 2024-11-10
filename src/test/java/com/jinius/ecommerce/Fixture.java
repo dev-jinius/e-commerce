@@ -2,22 +2,19 @@ package com.jinius.ecommerce;
 
 import com.jinius.ecommerce.order.api.OrderItemRequest;
 import com.jinius.ecommerce.order.api.OrderRequest;
-import com.jinius.ecommerce.order.domain.Order;
-import com.jinius.ecommerce.order.domain.OrderItem;
-import com.jinius.ecommerce.order.domain.OrderItemStatus;
-import com.jinius.ecommerce.order.domain.OrderStatus;
+import com.jinius.ecommerce.order.domain.*;
 import com.jinius.ecommerce.payment.domain.Payment;
+import com.jinius.ecommerce.product.domain.Stock;
 import com.jinius.ecommerce.user.api.UserChargeRequest;
 import com.jinius.ecommerce.user.domain.User;
 import com.navercorp.fixturemonkey.ArbitraryBuilder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;
+import com.navercorp.fixturemonkey.api.type.TypeReference;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static java.time.LocalTime.now;
 
 public class Fixture {
 
@@ -39,6 +36,10 @@ public class Fixture {
         return fixtureMonkey.giveMeBuilder(Payment.class)
                 .set("type", "POINT")
                 .set("amount", BigInteger.ZERO);
+    }
+
+    private static ArbitraryBuilder<List<Stock>> fixStockList() {
+        return fixtureMonkey.giveMeBuilder(new TypeReference<List<Stock>>() {});
     }
 
     public static User notExistUser() {
@@ -103,8 +104,6 @@ public class Fixture {
     }
 
     public static OrderRequest orderRequestId1With49900PriceProduct() {
-        List<OrderItemRequest> orderItems = fixtureMonkey.giveMe(OrderItemRequest.class, 1);
-
         List<OrderItemRequest> itemList = List.of(
                 new OrderItemRequest(1L, BigInteger.valueOf(49900), 1L)
         );
@@ -154,6 +153,21 @@ public class Fixture {
                 .set("orderItems", itemList)
                 .sample();
     }
+
+    public static OrderRequest orderRequestId1WithTwoProduct2() {
+        List<OrderItemRequest> orderItems = fixtureMonkey.giveMe(OrderItemRequest.class, 1);
+
+        List<OrderItemRequest> itemList = List.of(
+                new OrderItemRequest(1L, BigInteger.valueOf(49900), 1L),
+                new OrderItemRequest(5L, BigInteger.valueOf(30000), 2L)
+        );
+
+        return fixtureMonkey.giveMeBuilder(OrderRequest.class)
+                .set("userId", 1L)
+                .set("orderItems", itemList)
+                .sample();
+    }
+
 
     public static Order orderUserId1WithOneItem() {
         List<OrderItem> orderItems = List.of(
@@ -221,5 +235,24 @@ public class Fixture {
                 .set("status", "PENDING")
                 .set("paidAt", LocalDateTime.now())
                 .sample();
+    }
+
+    public static Stock stockOne() {
+        return new Stock(1L, 50L);
+    }
+
+    public static List<Stock> stockList() {
+        List<Stock> stocks = List.of(
+                new Stock(1L, 50L),
+                new Stock(3L, 50L)
+        );
+        return stocks;
+    }
+
+    public static List<OrderItem> requestDecreaseStockForId1One() {
+        return OrderSheet.from(orderRequestId1With49900PriceProduct()).getOrderItems();
+    }
+    public static List<OrderItem> requestDecreaseStockForId1AndId2() {
+        return OrderSheet.from(orderRequestId1WithTwoProduct2()).getOrderItems();
     }
 }

@@ -3,24 +3,24 @@ package com.jinius.ecommerce.product.domain;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.OrderItem;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class Stock {
     private Long productId;
     private Long quantity;
 
-    public Stock decrease(Long id, Long quantity) {
+    //재고 차감
+    public void decreaseStock(Long quantity) {
+        //재고 부족
         if (this.quantity < quantity)
             throw new EcommerceException(ErrorCode.NOT_ENOUGH_STOCK);
-        return new Stock(
-                id,
-                this.quantity - quantity
-        );
+
+        //재고 차감
+        setQuantity(this.quantity - quantity);
     }
 }
+
