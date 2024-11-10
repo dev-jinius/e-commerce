@@ -1,5 +1,6 @@
 package com.jinius.ecommerce.product.infra;
 
+import com.jinius.ecommerce.product.domain.Stock;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,8 +8,8 @@ import java.math.BigInteger;
 
 @Entity
 @Table(name = "tb_product")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 @Builder
 public class ProductEntity {
@@ -26,4 +27,19 @@ public class ProductEntity {
 
     @Column(name = "stock_quantity", nullable = false)
     private Long quantity;
+
+    public Stock toStock() {
+        return Stock.builder()
+                .productId(getId())
+                .quantity(getQuantity())
+                .build();
+    }
+
+    public static ProductEntity fromStock(Stock stock) {
+        return ProductEntity.builder()
+                .id(stock.getProductId())
+                .quantity(stock.getQuantity())
+                .build();
+    }
+
 }

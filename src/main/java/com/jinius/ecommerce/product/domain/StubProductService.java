@@ -19,7 +19,7 @@ public class StubProductService {
         );
 
         if (ObjectUtils.isEmpty(stocks))
-            throw new EcommerceException(ErrorCode.NOT_FOUND_PRODUCTS);
+            throw new EcommerceException(ErrorCode.NOT_FOUND_PRODUCT);
 
 
         for (OrderItem item : orderItems) {
