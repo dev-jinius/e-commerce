@@ -1,15 +1,16 @@
 package com.jinius.ecommerce.user.api;
 
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.common.validation.ValidNumber;
 import com.jinius.ecommerce.user.domain.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigInteger;
 
 /**
  * 유저 API
@@ -33,7 +34,7 @@ public class UserController {
     @PatchMapping("/point/charge")
     @Operation(summary = "유저 포인트 충전 API", description = "유저 포인트 충전하기")
     @Schema(description = "유저 포인트 충전 응답")
-    public ResponseEntity<UserPointResponse> chargePoint(@RequestBody UserChargeRequest request) {
+    public ResponseEntity<UserPointResponse> chargePoint(@RequestBody @Valid UserChargeRequest request) {
 
         return ResponseEntity.ok().body(UserPointResponse.from(userService.chargePoint(request)));
     }
