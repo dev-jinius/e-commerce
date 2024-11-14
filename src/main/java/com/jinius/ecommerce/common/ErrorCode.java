@@ -8,7 +8,11 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    /**
+     * Path 파라미터 Validation 예외
+     */
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST.value(),"ERR-000", "파라미터를 확인해주세요."),
+    
     /**
      * 유저 관련 예외
      */
