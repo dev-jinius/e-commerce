@@ -41,6 +41,7 @@ public class OrderEntity {
      *  CANCELED - 주문 취소
      *  PARTIAL_REFUND - 부분 환불/취소
      */
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     /**

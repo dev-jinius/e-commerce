@@ -1,5 +1,6 @@
 package com.jinius.ecommerce.product.infra;
 
+import com.jinius.ecommerce.product.domain.Product;
 import com.jinius.ecommerce.product.domain.Stock;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +40,15 @@ public class ProductEntity {
         return ProductEntity.builder()
                 .id(stock.getProductId())
                 .quantity(stock.getQuantity())
+                .build();
+    }
+
+    public Product toProduct() {
+        return Product.builder()
+                .productId(getId())
+                .productName(getName())
+                .productPrice(getPrice())
+                .quantity(getQuantity())
                 .build();
     }
 
