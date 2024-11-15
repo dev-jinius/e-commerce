@@ -30,6 +30,7 @@ public enum ErrorCode {
      */
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND.value(), "ERR-201", "상품이 존재하지 않습니다."),
     NOT_ENOUGH_STOCK(HttpStatus.BAD_REQUEST.value(), "ERR-202", "재고가 부족합니다."),
+    EXCEED_COUNT(HttpStatus.BAD_REQUEST.value(), "ERR-203", "조회할 상품 개수를 초과했습니다."),
     ;
 
     private int status;

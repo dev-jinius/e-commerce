@@ -1,8 +1,11 @@
 package com.jinius.ecommerce.product.api;
 
+import com.jinius.ecommerce.product.domain.ProductService;
+import com.jinius.ecommerce.product.domain.Top5Product;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/ecommerce/product")
 @Tag(name = "Product", description = "상품 API")
+@RequiredArgsConstructor
 public class ProductController {
+
+    private final ProductService productService;
 
     @GetMapping("")
     @Operation(summary = "전체 상품 목록 조회 API", description = "전체 상품 목록 조회하기")
@@ -34,5 +40,14 @@ public class ProductController {
                 new ProductResponse(11L,    "양말", BigInteger.valueOf(3000), 100L)
         );
         return ResponseEntity.ok().body(products);
+    }
+
+    @GetMapping("/top5")
+    @Operation(summary = "TOP 5 상품 목록 조회 API", description = "인기 상품 상위 5개 목록 조회하기")
+    @Schema(description = "인기 상품 상위 5개 목록 응답")
+    public ResponseEntity<List<ProductResponse>> topProductList() {
+        return ResponseEntity.ok().body(
+                productService.getTop5Products().stream().map(ProductResponse::from).toList()
+        );
     }
 }

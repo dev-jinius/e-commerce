@@ -12,8 +12,8 @@ CREATE TABLE `ecommerce`.`tb_user` (
    PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `tb_order`;
-CREATE TABLE `tb_order` (
+DROP TABLE IF EXISTS `tb_orders`;
+CREATE TABLE `tb_orders` (
      `order_id`     INT      NOT NULL AUTO_INCREMENT COMMENT '주문 ID',
      `user_id`      INT      DEFAULT NULL COMMENT '유저 ID',
      `status`       VARCHAR(15) DEFAULT NULL COMMENT '주문 상태',
@@ -58,7 +58,7 @@ CREATE TABLE `tb_payment` (
     `amount`            BIGINT NOT NULL COMMENT '결제 금액',
     `point`             BIGINT NOT NULL COMMENT '포인트',
     `created_at`       DATETIME(6) DEFAULT NOW() COMMENT '주문 일시',
-    `updated_at`       DATETIME(6) DEFAULT NOW() COMMENT '주문 일시',
+    `updated_at`       DATETIME(6) DEFAULT NOW() COMMENT '수정 일시',
     PRIMARY KEY (`payment_id`),
     KEY `idx_order_id` (`order_id`),
     KEY `idx_user_id` (`user_id`),

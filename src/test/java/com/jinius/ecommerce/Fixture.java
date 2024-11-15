@@ -4,6 +4,7 @@ import com.jinius.ecommerce.order.api.OrderItemRequest;
 import com.jinius.ecommerce.order.api.OrderRequest;
 import com.jinius.ecommerce.order.domain.*;
 import com.jinius.ecommerce.payment.domain.Payment;
+import com.jinius.ecommerce.product.domain.Product;
 import com.jinius.ecommerce.product.domain.Stock;
 import com.jinius.ecommerce.user.api.UserChargeRequest;
 import com.jinius.ecommerce.user.domain.User;
@@ -254,5 +255,28 @@ public class Fixture {
     }
     public static List<OrderItem> requestDecreaseStockForId1AndId2() {
         return OrderSheet.from(orderRequestId1WithTwoProduct2()).getOrderItems();
+    }
+
+    public static List<Product> top5ProductList() {
+        List<Product> products = List.of(
+                new Product(1L, "청바지", BigInteger.valueOf(49900), 50L),
+                new Product(5L, "아노락", BigInteger.valueOf(60000), 40L),
+                new Product(4L, "바람막이", BigInteger.valueOf(100000), 30L),
+                new Product(8L, "슬리퍼", BigInteger.valueOf(20000), 20L),
+                new Product(2L, "원피스", BigInteger.valueOf(70000), 15L)
+        );
+        return products;
+    }
+
+    public static List<Product> ExceedProductsList() {
+        List<Product> products = List.of(
+                new Product(1L, "청바지", BigInteger.valueOf(49900), 50L),
+                new Product(5L, "아노락", BigInteger.valueOf(60000), 40L),
+                new Product(4L, "바람막이", BigInteger.valueOf(100000), 30L),
+                new Product(8L, "슬리퍼", BigInteger.valueOf(20000), 20L),
+                new Product(2L, "원피스", BigInteger.valueOf(70000), 15L),
+                new Product(10L, "가디건", BigInteger.valueOf(80000), 10L)
+        );
+        return products;
     }
 }
