@@ -3,7 +3,10 @@ package com.jinius.ecommerce.payment.infra;
 import com.jinius.ecommerce.payment.domain.Payment;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -41,8 +44,10 @@ public class PaymentEntity {
     private String status;
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createAt;
 
+    @LastModifiedDate
     private LocalDateTime updateAt;
 
     public static PaymentEntity fromDomain(Payment payment) {

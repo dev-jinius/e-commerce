@@ -30,14 +30,16 @@ class OrderServiceTest {
     private final StubProductService stubProductService;
 
     @Mock
-    private final OrderRepository orderRepository;
+    OrderRepository orderRepository;
+    @Mock
+    OrderItemRepository orderItemRepository;
+
 
     OrderServiceTest() {
         stubUserService = new StubUserService();
         stubPaymentService = new StubPaymentService();
         stubProductService = new StubProductService();
-        orderRepository = new StubOrderRepository();
-        this.sut = new OrderService(stubUserService, stubPaymentService, stubProductService, orderRepository);
+        this.sut = new OrderService(stubUserService, stubPaymentService, stubProductService, orderRepository, orderItemRepository);
     }
 
     @Test

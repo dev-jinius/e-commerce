@@ -27,16 +27,6 @@ public class OrderController {
         Order order = orderService.createOrder(request);
         OrderResponse response = OrderResponse.from(order);
 
-        //MOCK API 가짜 데이터
-//        List<OrderItemResponse> orderItems = List.of(
-//            new OrderItemResponse(1L, request.getOrderItems().get(0).getProductId(), BigInteger.valueOf(49900), 1L),
-//            new OrderItemResponse(2L, request.getOrderItems().get(1).getProductId(), BigInteger.valueOf(30000), 2L)
-//        );
-//
-//        OrderResponse response = new OrderResponse(
-//            1L, "PENDING", BigInteger.valueOf(109900), LocalDateTime.now(), orderItems
-//        );
-
         return ResponseEntity.ok().body(response);
     }
 }

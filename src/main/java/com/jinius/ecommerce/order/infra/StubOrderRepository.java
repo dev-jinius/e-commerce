@@ -3,6 +3,7 @@ package com.jinius.ecommerce.order.infra;
 import com.jinius.ecommerce.order.domain.Order;
 import com.jinius.ecommerce.order.domain.OrderRepository;
 import com.jinius.ecommerce.order.domain.OrderSheet;
+import com.jinius.ecommerce.order.domain.OrderStatus;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,9 @@ public class StubOrderRepository implements OrderRepository {
         );
     }
 
-    public void updateStatus(Order order) {
+    @Override
+    public void updateStatus(Long orderId, OrderStatus status) {
+
     }
+
 }

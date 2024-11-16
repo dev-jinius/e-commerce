@@ -6,5 +6,5 @@ public interface OrderRepository {
     Order create(OrderSheet orderSheet);
 
     //주문 상태 업데이트
-    void updateStatus(Order order);
+    void updateStatus(Long orderId, OrderStatus status);
 }
