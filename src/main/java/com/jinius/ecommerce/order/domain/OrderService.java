@@ -9,20 +9,26 @@ import com.jinius.ecommerce.user.domain.StubUserService;
 import com.jinius.ecommerce.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.jinius.ecommerce.order.domain.OrderItemStatus.DELIVERED;
 import static com.jinius.ecommerce.order.domain.OrderStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private final StubUserService stubUserService;          //유저 서비스
-    private final StubPaymentService stubPaymentService;    //결제 서비스
-    private final StubProductService stubProductService;    //상품 서비스
+    private final StubUserService userService;          //유저 서비스
+    private final StubPaymentService paymentService;    //결제 서비스
+    private final StubProductService productService;    //상품 서비스
 
-    @Qualifier("orderRepositoryImpl")
+    @Qualifier(value = "orderRepositoryImpl")
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     /**
      * 주문 생성
@@ -33,29 +39,30 @@ public class OrderService {
     public Order createOrder(OrderRequest request) {
 
         //유저 확인
-        User user = stubUserService.validateUserByUserId(request.getUserId());
+        User user = userService.validateUserByUserId(request.getUserId());
 
         //주문서 생성
         OrderSheet orderSheet = OrderSheet.from(request);
         orderSheet.log();
         Order order = orderRepository.create(orderSheet);
+        List<OrderItem> orderItems = orderItemRepository.create(order);
 
         try {
             //잔액(포인트) 확인
-            stubUserService.comparePoint(user, orderSheet.getTotalPrice());
+            userService.comparePoint(user, orderSheet.getTotalPrice());
 
             //결제
-            stubPaymentService.pay(user, order);
-            order = updateOrderStatus(order, PAID);
+            paymentService.pay(user, order);
+            updateOrderStatus(order, PAID);
 
             //재고 처리
-            stubProductService.decreaseStock(orderSheet.getOrderItems());
-            order = updateOrderStatus(order, COMPLETED);
-
+            productService.decreaseStock(orderSheet.getOrderItems());
+            updateOrderStatus(order, COMPLETED);
+            
             return order;
         } catch (EcommerceException e) {
-            order = updateOrderStatus(order, CANCELED);
-//            System.out.println("order.getOrderStatus() = " + order.getOrderStatus());
+            updateOrderStatus(order, CANCELED);
+            updateOrderItemStatus(orderItems, OrderItemStatus.CANCELED);
             throw e;
         }
     }
@@ -66,7 +73,8 @@ public class OrderService {
      * @param status
      * @return Order
      */
-    public Order updateOrderStatus(Order order, OrderStatus status) {
+    @Transactional
+    public void updateOrderStatus(Order order, OrderStatus status) {
         if (
             (status == PAID && order.getOrderStatus() != PENDING) ||
             (status == COMPLETED && order.getOrderStatus() != PAID)
@@ -74,8 +82,27 @@ public class OrderService {
             throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
         }
 
+        orderRepository.updateStatus(order.getOrderId(), status);
         order.setOrderStatus(status);
-        orderRepository.updateStatus(order);
-        return order;
+    }
+
+    /**
+     * 주문 상품 상태 값 변경
+     * @param orderItems
+     * @param status
+     */
+    @Transactional
+    public void updateOrderItemStatus(List<OrderItem> orderItems, OrderItemStatus status) {
+        orderItemRepository.updateStatus(orderItems.stream().map(item -> item.getId()).collect(Collectors.toList()), status);
+    }
+
+    /**
+     * 10초마다 주문 완료된 주문 상품 배송 처리
+     */
+    @Scheduled(fixedRate = 10000) 
+    public void updateOrderItemStatusToDELIVERED() {
+        List<Long> preparingItems = orderItemRepository.findPreparingItems();
+
+        orderItemRepository.updateStatus(preparingItems, DELIVERED);
     }
 }

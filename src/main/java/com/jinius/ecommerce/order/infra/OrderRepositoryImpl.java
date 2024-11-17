@@ -3,6 +3,7 @@ package com.jinius.ecommerce.order.infra;
 import com.jinius.ecommerce.order.domain.Order;
 import com.jinius.ecommerce.order.domain.OrderRepository;
 import com.jinius.ecommerce.order.domain.OrderSheet;
+import com.jinius.ecommerce.order.domain.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public void updateStatus(Order order) {
-        orderJpaRepository.save(OrderEntity.fromDomain(order));
+    public void updateStatus(Long orderId, OrderStatus status) {
+        orderJpaRepository.updateStatus(orderId, status);
     }
 }

@@ -1,9 +1,6 @@
 package com.jinius.ecommerce.order.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigInteger;
 
@@ -13,7 +10,10 @@ import java.math.BigInteger;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class OrderItem {
+    private Long id;
+    private Long orderId;
     private Long productId;
     private String productName;
     private BigInteger productPrice;
@@ -31,4 +31,5 @@ public class OrderItem {
     public BigInteger calculateTotalPrice() {
         return productPrice.multiply(BigInteger.valueOf(quantity));
     }
+
 }

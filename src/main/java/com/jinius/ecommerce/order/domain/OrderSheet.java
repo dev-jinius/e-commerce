@@ -1,10 +1,7 @@
 package com.jinius.ecommerce.order.domain;
 
 import com.jinius.ecommerce.order.api.OrderRequest;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -18,6 +15,7 @@ import static com.jinius.ecommerce.order.domain.OrderStatus.PENDING;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class OrderSheet {
     private Long userId;                        //유저 ID
     private List<OrderItem> orderItems;         //주문상품 리스트
@@ -29,9 +27,15 @@ public class OrderSheet {
     public static OrderSheet from(OrderRequest request) {
         List<OrderItem> orderItems = request.getOrderItems().stream()
                 .map(item -> new OrderItem(item.getProductId(), item.getPrice(), item.getQuantity()))
-                .collect(Collectors.toList());
+                .toList();
 
-        return new OrderSheet(request.getUserId(), orderItems, "POINT", calculateOrderTotalPrice(orderItems), PENDING);
+        return OrderSheet.builder()
+                .userId(request.getUserId())
+                .orderItems(orderItems)
+                .paymentType("POINT")
+                .totalPrice(calculateOrderTotalPrice(orderItems))
+                .orderStatus(PENDING)
+                .build();
     }
 
     //총 주문금액 계산

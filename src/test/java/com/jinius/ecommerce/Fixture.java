@@ -172,7 +172,7 @@ public class Fixture {
 
     public static Order orderUserId1WithOneItem() {
         List<OrderItem> orderItems = List.of(
-                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING)
+                new OrderItem(1L, 1L, 1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING)
         );
 
         return fixOrderId()
@@ -186,8 +186,8 @@ public class Fixture {
 
     public static Order orderUserId1WithTwoItem() {
         List<OrderItem> orderItems = List.of(
-                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING),
-                new OrderItem(3L, "아노락", BigInteger.valueOf(40000), BigInteger.valueOf(80000), 2L, OrderItemStatus.PREPARING)
+                new OrderItem(1L, 1L, 1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING),
+                new OrderItem(2L, 2L, 3L, "아노락", BigInteger.valueOf(40000), BigInteger.valueOf(80000), 2L, OrderItemStatus.PREPARING)
         );
 
         return fixOrderId()
@@ -201,8 +201,8 @@ public class Fixture {
 
     public static Order orderNegativeOrderPrice() {
         List<OrderItem> orderItems = List.of(
-                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING),
-                new OrderItem(3L, "아노락", BigInteger.valueOf(40000), BigInteger.valueOf(80000), 2L, OrderItemStatus.PREPARING)
+                new OrderItem(1L, 1L, 1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING),
+                new OrderItem(2L, 2L, 3L, "아노락", BigInteger.valueOf(40000), BigInteger.valueOf(80000), 2L, OrderItemStatus.PREPARING)
         );
 
         return fixOrderId()
@@ -216,7 +216,7 @@ public class Fixture {
 
     public static Order orderNotPendingStatus() {
         List<OrderItem> orderItems = List.of(
-                new OrderItem(1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING)
+                new OrderItem(1L, 1L, 1L, "바람막이", BigInteger.valueOf(49900), BigInteger.valueOf(49900), 1L, OrderItemStatus.PREPARING)
         );
 
         return fixOrderId()
