@@ -2,69 +2,39 @@ package com.jinius.ecommerce.order.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.api.OrderRequest;
-import com.jinius.ecommerce.payment.domain.StubPaymentService;
-import com.jinius.ecommerce.product.domain.StubProductService;
-import com.jinius.ecommerce.user.domain.StubUserService;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.order.domain.model.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.jinius.ecommerce.order.domain.OrderItemStatus.DELIVERED;
-import static com.jinius.ecommerce.order.domain.OrderStatus.*;
+import static com.jinius.ecommerce.order.domain.model.OrderItemStatus.DELIVERED;
+import static com.jinius.ecommerce.order.domain.model.OrderStatus.*;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class OrderService {
-    private final StubUserService userService;          //유저 서비스
-    private final StubPaymentService paymentService;    //결제 서비스
-    private final StubProductService productService;    //상품 서비스
 
-    @Qualifier(value = "orderRepositoryImpl")
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
     /**
      * 주문 생성
-     * @param request OrderRequest
+     * @param orderSheet
      * @return Order
      */
     @Transactional
-    public Order createOrder(OrderRequest request) {
-
-        //유저 확인
-        User user = userService.validateUserByUserId(request.getUserId());
-
-        //주문서 생성
-        OrderSheet orderSheet = OrderSheet.from(request);
+    public Order createOrder(OrderSheet orderSheet) {
+        //주문서 출력
         orderSheet.log();
+        //주문 생성
         Order order = orderRepository.create(orderSheet);
-        List<OrderItem> orderItems = orderItemRepository.create(order);
-
-        try {
-            //잔액(포인트) 확인
-            userService.comparePoint(user, orderSheet.getTotalPrice());
-
-            //결제
-            paymentService.pay(user, order);
-            updateOrderStatus(order, PAID);
-
-            //재고 처리
-            productService.decreaseStock(orderSheet.getOrderItems());
-            updateOrderStatus(order, COMPLETED);
-            
-            return order;
-        } catch (EcommerceException e) {
-            updateOrderStatus(order, CANCELED);
-            updateOrderItemStatus(orderItems, OrderItemStatus.CANCELED);
-            throw e;
-        }
+        //주문 상품 생성
+        orderItemRepository.create(order);
+        return order;
     }
 
     /**

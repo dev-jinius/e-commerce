@@ -1,6 +1,6 @@
 package com.jinius.ecommerce.payment.domain;
 
-import com.jinius.ecommerce.order.domain.Order;
+import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.user.domain.User;
 import lombok.*;
 

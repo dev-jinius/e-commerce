@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.order.domain;
+package com.jinius.ecommerce.order.domain.model;
 
 import lombok.*;
 
@@ -21,10 +21,4 @@ public class Order {
     private BigInteger totalPrice;
     private OrderStatus orderStatus;
     private LocalDateTime orderDate;
-
-    public BigInteger calculateTotalPrice() {
-        return orderItems.stream()
-                .map(OrderItem::getTotalPrice)
-                .reduce(BigInteger.ZERO, BigInteger::add);
-    }
 }

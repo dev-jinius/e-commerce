@@ -3,7 +3,7 @@ package com.jinius.ecommerce.payment.domain;
 import com.jinius.ecommerce.Fixture;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.domain.Order;
+import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

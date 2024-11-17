@@ -1,6 +1,7 @@
-package com.jinius.ecommerce.order.api;
+package com.jinius.ecommerce.order.api.dto;
 
 import com.jinius.ecommerce.common.validation.ValidNumber;
+import com.jinius.ecommerce.order.application.dto.OrderFacadeRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,4 +22,13 @@ public class OrderRequest {
 
     @Valid
     private List<OrderItemRequest> orderItems;  //주문 상품 목록
+
+    public OrderFacadeRequest toFacade() {
+        return OrderFacadeRequest.builder()
+                .userId(getUserId())
+                .orderItems(getOrderItems().stream()
+                        .map(OrderItemRequest::toFacade)
+                        .collect(Collectors.toList()))
+                .build();
+    }
 }

@@ -1,8 +1,8 @@
 package com.jinius.ecommerce;
 
-import com.jinius.ecommerce.order.api.OrderItemRequest;
-import com.jinius.ecommerce.order.api.OrderRequest;
-import com.jinius.ecommerce.order.domain.*;
+import com.jinius.ecommerce.order.api.dto.OrderItemRequest;
+import com.jinius.ecommerce.order.api.dto.OrderRequest;
+import com.jinius.ecommerce.order.domain.model.*;
 import com.jinius.ecommerce.payment.domain.Payment;
 import com.jinius.ecommerce.product.domain.Product;
 import com.jinius.ecommerce.product.domain.Stock;

@@ -2,7 +2,7 @@ package com.jinius.ecommerce.payment.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.domain.Order;
+import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigInteger;
 
-import static com.jinius.ecommerce.order.domain.OrderStatus.PENDING;
+import static com.jinius.ecommerce.order.domain.model.OrderStatus.PENDING;
 
 @Service
 @RequiredArgsConstructor

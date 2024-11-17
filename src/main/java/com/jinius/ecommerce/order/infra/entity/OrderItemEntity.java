@@ -1,7 +1,7 @@
-package com.jinius.ecommerce.order.infra;
+package com.jinius.ecommerce.order.infra.entity;
 
-import com.jinius.ecommerce.order.domain.OrderItem;
-import com.jinius.ecommerce.order.domain.OrderItemStatus;
+import com.jinius.ecommerce.order.domain.model.OrderItem;
+import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

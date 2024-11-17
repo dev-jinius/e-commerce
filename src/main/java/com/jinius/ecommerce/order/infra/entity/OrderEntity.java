@@ -1,12 +1,10 @@
-package com.jinius.ecommerce.order.infra;
+package com.jinius.ecommerce.order.infra.entity;
 
-import com.jinius.ecommerce.order.domain.Order;
-import com.jinius.ecommerce.order.domain.OrderSheet;
-import com.jinius.ecommerce.order.domain.OrderStatus;
+import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderSheet;
+import com.jinius.ecommerce.order.domain.model.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

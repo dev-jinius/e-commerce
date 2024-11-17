@@ -1,6 +1,7 @@
-package com.jinius.ecommerce.order.api;
+package com.jinius.ecommerce.order.api.dto;
 
-import com.jinius.ecommerce.order.domain.OrderItem;
+import com.jinius.ecommerce.order.application.dto.OrderItemFacadeResponse;
+import com.jinius.ecommerce.order.domain.model.OrderItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,11 +17,11 @@ public class OrderItemResponse {
     private BigInteger price;   //상품 가격
     private Long quantity;      //상품 수량
 
-    public static OrderItemResponse from(OrderItem orderItem) {
+    public static OrderItemResponse from(OrderItemFacadeResponse response) {
         return new OrderItemResponse(
-                orderItem.getProductId(),
-                orderItem.getProductPrice(),
-                orderItem.getQuantity()
+                response.getProductId(),
+                response.getPrice(),
+                response.getQuantity()
         );
     }
 }

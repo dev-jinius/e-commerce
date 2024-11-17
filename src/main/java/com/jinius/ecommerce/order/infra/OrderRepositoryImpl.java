@@ -1,9 +1,10 @@
 package com.jinius.ecommerce.order.infra;
 
-import com.jinius.ecommerce.order.domain.Order;
+import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.OrderRepository;
-import com.jinius.ecommerce.order.domain.OrderSheet;
-import com.jinius.ecommerce.order.domain.OrderStatus;
+import com.jinius.ecommerce.order.domain.model.OrderSheet;
+import com.jinius.ecommerce.order.domain.model.OrderStatus;
+import com.jinius.ecommerce.order.infra.entity.OrderEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
