@@ -17,7 +17,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Order create(OrderSheet orderSheet) {
-        return orderJpaRepository.saveAndFlush(OrderEntity.fromDomain(orderSheet)).toDomain(orderSheet);
+        return orderJpaRepository.saveAndFlush(OrderEntity.fromOrderSheet(orderSheet)).toDomain(orderSheet);
     }
 
     @Override

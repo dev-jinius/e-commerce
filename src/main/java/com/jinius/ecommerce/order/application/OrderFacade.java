@@ -7,7 +7,6 @@ import com.jinius.ecommerce.order.domain.*;
 import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
-import com.jinius.ecommerce.payment.domain.Payment;
 import com.jinius.ecommerce.payment.domain.PaymentService;
 import com.jinius.ecommerce.product.domain.ProductService;
 import com.jinius.ecommerce.user.domain.User;
@@ -38,15 +37,13 @@ public class OrderFacade {
         //유저 확인
         User user = userService.validateUserByUserId(request.getUserId());
         //주문서 생성
-        OrderSheet orderSheet = request.createOrderSheet();
+        OrderSheet orderSheet = orderService.createOrderSheet(request.toOrderSheet());
         //주문 생성
         Order order = orderService.createOrder(orderSheet);
 
         try {
-            //잔액(포인트) 확인
-            userService.comparePoint(user, order.getTotalPrice());
             //결제
-            Payment paymentInfo = paymentService.pay(user, order);
+            paymentService.pay(user, order);
             orderService.updateOrderStatus(order, PAID);
             //재고 처리
             productService.decreaseStock(order.getOrderItems());

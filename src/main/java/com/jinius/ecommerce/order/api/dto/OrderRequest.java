@@ -4,15 +4,12 @@ import com.jinius.ecommerce.common.validation.ValidNumber;
 import com.jinius.ecommerce.order.application.dto.OrderFacadeRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class OrderRequest {

@@ -4,6 +4,7 @@ import com.jinius.ecommerce.Fixture;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderStatus;
 import com.jinius.ecommerce.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigInteger;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -29,8 +32,9 @@ class PaymentServiceTest {
     @DisplayName("결제 요청 시 결제 금액이 0 이하인 경우 결제 실패")
     void createPay_negativeOrderPrice_failed() {
         //given
-        User user = Fixture.existUser();
-        Order order = Fixture.orderNegativeOrderPrice();
+        User user = Fixture.user(1L, 50000);
+        Order order = Fixture.order(1L);
+        order.setTotalPrice(BigInteger.valueOf(-100000));
 
         //when
         Throwable exception = null;
@@ -49,7 +53,7 @@ class PaymentServiceTest {
     void createPay_NullUser_failed() {
         //given
         User user = null;
-        Order order = Fixture.orderUserId1WithOneItem();
+        Order order = Fixture.order(1L);
 
         //when
         Throwable exception = null;
@@ -67,7 +71,7 @@ class PaymentServiceTest {
     @DisplayName("결제 요청 시 주문이 NULL인 경우 결제 실패")
     void createPay_NullOrder_failed() {
         //given
-        User user = Fixture.existUser();
+        User user = Fixture.user(1L, 50000);
         Order order = null;
 
         //when
@@ -86,8 +90,9 @@ class PaymentServiceTest {
     @DisplayName("결제 요청 시 주문 상태 값이 'PENDING'이 아닌 경우 결제 실패")
     void createPay_notPendingStatus_failed() {
         //given
-        User user = Fixture.existUser();
-        Order order = Fixture.orderNotPendingStatus();
+        User user = Fixture.user(1L, 50000);
+        Order order = Fixture.order(1L);
+        order.setOrderStatus(OrderStatus.COMPLETED);
 
         //when
         Throwable exception = null;
@@ -105,8 +110,9 @@ class PaymentServiceTest {
     @DisplayName("결제 요청 시 유저 잔액 포인트보다 주문 금액이 큰 경우 결제 실패")
     void createPay_notEnoughUserPoint_failed() {
         //given
-        User user = Fixture.existUser();
-        Order order = Fixture.orderUserId1WithTwoItem();
+        User user = Fixture.user(1L, 50000);
+        Order order = Fixture.order(1L);
+        order.setTotalPrice(BigInteger.valueOf(100000));
 
         //when
         Throwable exception = null;
@@ -124,8 +130,9 @@ class PaymentServiceTest {
     @DisplayName("포인트 결제 요청 시 결제 성공")
     void createPay_pointPay_success() {
         //given
-        User user = Fixture.existUser();
-        Order order = Fixture.orderUserId1WithOneItem();
+        User user = Fixture.user(1L, 100000);
+        Order order = Fixture.order(1L);
+        order.setTotalPrice(BigInteger.valueOf(50000));
 
         //when
         when(paymentRepository.save(any(Payment.class))).thenReturn(Fixture.paymentOrder(user, order));

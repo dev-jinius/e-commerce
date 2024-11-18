@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,18 +24,48 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
 
     /**
+     * 주문서 생성
+     * @return
+     */
+    public OrderSheet createOrderSheet(OrderSheet orderSheet) {
+        //총 주문 금액 계산
+        orderSheet.calculateOrderTotalPrice(orderSheet.getOrderItems());
+
+        //총 주문금액이 0원 이하인 경우
+        if (orderSheet.getTotalPrice().compareTo(BigInteger.ZERO) <= 0) throw new EcommerceException(ErrorCode.INVALID_TOTAL_PRICE);
+
+        //주문서 출력
+        orderSheet.log();
+        return orderSheet;
+    }
+    
+    /**
      * 주문 생성
      * @param orderSheet
      * @return Order
      */
     @Transactional
     public Order createOrder(OrderSheet orderSheet) {
-        //주문서 출력
-        orderSheet.log();
-        //주문 생성
+        if (orderSheet == null) throw new EcommerceException(ErrorCode.NOT_FOUND_ORDER_SHEET);
+
         Order order = orderRepository.create(orderSheet);
-        //주문 상품 생성
-        orderItemRepository.create(order);
+        if (order == null) throw new EcommerceException(ErrorCode.FAIL_CREATE_ORDER);
+
+        createOrderItems(order);
+        return order;
+    }
+
+    /**
+     * 주문 상품 생성
+     * @param order
+     * @return
+     */
+    @Transactional
+    public Order createOrderItems(Order order) {
+        List<OrderItem> orderItems = orderItemRepository.create(order);
+        if (orderItems.size() != order.getOrderItems().size())
+            throw new EcommerceException(ErrorCode.FAIL_CREATE_ORDER_ITEMS);
+
         return order;
     }
 
@@ -49,9 +81,8 @@ public class OrderService {
             (status == PAID && order.getOrderStatus() != PENDING) ||
             (status == COMPLETED && order.getOrderStatus() != PAID)
         ) {
-            throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
+            throw new EcommerceException(ErrorCode.INVALID_ORDER_STATUS);
         }
-
         orderRepository.updateStatus(order.getOrderId(), status);
         order.setOrderStatus(status);
     }
@@ -72,7 +103,6 @@ public class OrderService {
     @Scheduled(fixedRate = 10000) 
     public void updateOrderItemStatusToDELIVERED() {
         List<Long> preparingItems = orderItemRepository.findPreparingItems();
-
         orderItemRepository.updateStatus(preparingItems, DELIVERED);
     }
 }

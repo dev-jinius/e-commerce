@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import static com.jinius.ecommerce.order.domain.model.OrderStatus.PENDING;
 import static java.time.LocalDateTime.now;
 
 @Entity
@@ -67,11 +68,11 @@ public class OrderEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static OrderEntity fromDomain(OrderSheet orderSheet) {
+    public static OrderEntity fromOrderSheet(OrderSheet orderSheet) {
         return OrderEntity.builder()
                 .userId(orderSheet.getUserId())
-                .status(orderSheet.getOrderStatus())
                 .totalPrice(orderSheet.getTotalPrice())
+                .status(PENDING)
                 .build();
     }
 
@@ -90,7 +91,6 @@ public class OrderEntity {
                 .orderId(getId())
                 .userId(getUserId())
                 .orderItems(orderSheet.getOrderItems())
-                .paymentType(orderSheet.getPaymentType())
                 .totalPrice(getTotalPrice())
                 .orderStatus(getStatus())
                 .orderDate(getCreatedAt())

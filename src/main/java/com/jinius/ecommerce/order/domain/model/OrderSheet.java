@@ -1,5 +1,7 @@
 package com.jinius.ecommerce.order.domain.model;
 
+import com.jinius.ecommerce.common.EcommerceException;
+import com.jinius.ecommerce.common.ErrorCode;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,13 +20,15 @@ public class OrderSheet {
     private Long userId;                        //유저 ID
     private List<OrderItem> orderItems;         //주문상품 리스트
     private BigInteger totalPrice;              //총 주문금액
-    private OrderStatus orderStatus;            //주문 상태
 
     //총 주문금액 계산
-    public static BigInteger calculateOrderTotalPrice(List<OrderItem> items) {
-        return items.stream()
-                .map(OrderItem::getTotalPrice)
-                .reduce(BigInteger.ZERO, BigInteger::add);
+    public BigInteger calculateOrderTotalPrice(List<OrderItem> items) {
+        BigInteger result = items.stream()
+                                .map(OrderItem::calculateTotalPrice)
+                                .reduce(BigInteger.ZERO, BigInteger::add);
+
+        setTotalPrice(result);
+        return result;
     }
 
     //주문서 출력
@@ -34,7 +38,6 @@ public class OrderSheet {
         orderItems.forEach(item ->
                 log.info("상품 ID = " + item.getProductId() + ", 가격 = " + item.getProductPrice() + ", 수량 = " + item.getQuantity())        );
         log.info("총 주문 금액 = " + totalPrice);
-        log.info("주문 상태 = " + orderStatus);
         log.info("===================");
     }
 }
