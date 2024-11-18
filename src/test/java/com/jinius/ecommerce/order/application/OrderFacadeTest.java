@@ -66,7 +66,7 @@ public class OrderFacadeTest {
     @DisplayName("주문 요청 시 존재하지 않는 유저인 경우 NOT_FOUND_USER 예외 발생")
     void order_fail_NOT_FOUND_USER() {
         //given
-        given(userService.validateUserByUserId(any(Long.class)))
+        given(userService.getUser(any(Long.class)))
                 .willThrow(new EcommerceException(NOT_FOUND_USER));
 
         //when
@@ -96,7 +96,7 @@ public class OrderFacadeTest {
                 .build();
         OrderSheet mockOrderSheet = Fixture.orderSheet(userId);
 
-        given(userService.validateUserByUserId(any())).willReturn(mockUser);
+        given(userService.getUser(any())).willReturn(mockUser);
         given(orderService.createOrderSheet(any())).willReturn(mockOrderSheet);
         given(orderService.createOrder(any())).willReturn(null);
         given(orderService.createOrder(any(OrderSheet.class)))
@@ -129,7 +129,7 @@ public class OrderFacadeTest {
         OrderSheet mockOrderSheet = Fixture.orderSheet(userId);
         Order mockOrder = Fixture.order(userId);
 
-        given(userService.validateUserByUserId(any())).willReturn(mockUser);
+        given(userService.getUser(any())).willReturn(mockUser);
         given(orderService.createOrderSheet(any())).willReturn(mockOrderSheet);
         given(orderService.createOrder(any())).willReturn(mockOrder);
         given(paymentService.pay(any(), any()))
@@ -172,7 +172,7 @@ public class OrderFacadeTest {
                 .status("PENDING")
                 .build();
 
-        given(userService.validateUserByUserId(any())).willReturn(mockUser);
+        given(userService.getUser(any())).willReturn(mockUser);
         given(orderService.createOrderSheet(any())).willReturn(mockOrderSheet);
         given(orderService.createOrder(any())).willReturn(mockOrder);
         given(paymentService.pay(any(), any())).willReturn(mockPayment);

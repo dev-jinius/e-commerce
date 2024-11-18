@@ -35,7 +35,7 @@ public class OrderFacade {
     public OrderFacadeResponse order(OrderFacadeRequest request) {
 
         //유저 확인
-        User user = userService.validateUserByUserId(request.getUserId());
+        User user = userService.getUser(request.getUserId());
         //주문서 생성
         OrderSheet orderSheet = orderService.createOrderSheet(request.toOrderSheet());
         //주문 생성

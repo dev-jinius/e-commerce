@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.user.api;
+package com.jinius.ecommerce.user.api.dto;
 
 import com.jinius.ecommerce.common.validation.ValidNumber;
 import jakarta.validation.constraints.NotNull;
