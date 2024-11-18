@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.order.domain;
+package com.jinius.ecommerce.order.domain.model;
 
 public enum OrderItemStatus {
     PREPARING,          //배송 준비 중

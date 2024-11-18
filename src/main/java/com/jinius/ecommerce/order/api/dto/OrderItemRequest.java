@@ -1,6 +1,7 @@
-package com.jinius.ecommerce.order.api;
+package com.jinius.ecommerce.order.api.dto;
 
 import com.jinius.ecommerce.common.validation.ValidNumber;
+import com.jinius.ecommerce.order.application.dto.OrderItemFacadeRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,12 @@ public class OrderItemRequest {
     @NotNull(message = "상품 수량은 필수입니다.")
     @ValidNumber
     private Long quantity;          //상품 수량
+
+    public OrderItemFacadeRequest toFacade() {
+        return OrderItemFacadeRequest.builder()
+                .productId(getProductId())
+                .price(getPrice())
+                .quantity(getQuantity())
+                .build();
+    }
 }

@@ -1,5 +1,9 @@
 package com.jinius.ecommerce.order.domain;
 
+import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderItem;
+import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
+
 import java.util.List;
 
 public interface OrderItemRepository {

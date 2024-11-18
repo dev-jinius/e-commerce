@@ -1,12 +1,10 @@
-package com.jinius.ecommerce.order.infra;
+package com.jinius.ecommerce.order.infra.entity;
 
-import com.jinius.ecommerce.order.domain.Order;
-import com.jinius.ecommerce.order.domain.OrderSheet;
-import com.jinius.ecommerce.order.domain.OrderStatus;
+import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderSheet;
+import com.jinius.ecommerce.order.domain.model.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import static com.jinius.ecommerce.order.domain.model.OrderStatus.PENDING;
 import static java.time.LocalDateTime.now;
 
 @Entity
@@ -69,11 +68,11 @@ public class OrderEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static OrderEntity fromDomain(OrderSheet orderSheet) {
+    public static OrderEntity fromOrderSheet(OrderSheet orderSheet) {
         return OrderEntity.builder()
                 .userId(orderSheet.getUserId())
-                .status(orderSheet.getOrderStatus())
                 .totalPrice(orderSheet.getTotalPrice())
+                .status(PENDING)
                 .build();
     }
 
@@ -92,7 +91,6 @@ public class OrderEntity {
                 .orderId(getId())
                 .userId(getUserId())
                 .orderItems(orderSheet.getOrderItems())
-                .paymentType(orderSheet.getPaymentType())
                 .totalPrice(getTotalPrice())
                 .orderStatus(getStatus())
                 .orderDate(getCreatedAt())

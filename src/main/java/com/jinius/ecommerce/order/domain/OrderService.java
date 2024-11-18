@@ -2,69 +2,71 @@ package com.jinius.ecommerce.order.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.api.OrderRequest;
-import com.jinius.ecommerce.payment.domain.StubPaymentService;
-import com.jinius.ecommerce.product.domain.StubProductService;
-import com.jinius.ecommerce.user.domain.StubUserService;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.order.domain.model.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.jinius.ecommerce.order.domain.OrderItemStatus.DELIVERED;
-import static com.jinius.ecommerce.order.domain.OrderStatus.*;
+import static com.jinius.ecommerce.order.domain.model.OrderItemStatus.DELIVERED;
+import static com.jinius.ecommerce.order.domain.model.OrderStatus.*;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class OrderService {
-    private final StubUserService userService;          //유저 서비스
-    private final StubPaymentService paymentService;    //결제 서비스
-    private final StubProductService productService;    //상품 서비스
 
-    @Qualifier(value = "orderRepositoryImpl")
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
     /**
+     * 주문서 생성
+     * @return
+     */
+    public OrderSheet createOrderSheet(OrderSheet orderSheet) {
+        //총 주문 금액 계산
+        orderSheet.calculateOrderTotalPrice(orderSheet.getOrderItems());
+
+        //총 주문금액이 0원 이하인 경우
+        if (orderSheet.getTotalPrice().compareTo(BigInteger.ZERO) <= 0) throw new EcommerceException(ErrorCode.INVALID_TOTAL_PRICE);
+
+        //주문서 출력
+        orderSheet.log();
+        return orderSheet;
+    }
+    
+    /**
      * 주문 생성
-     * @param request OrderRequest
+     * @param orderSheet
      * @return Order
      */
     @Transactional
-    public Order createOrder(OrderRequest request) {
+    public Order createOrder(OrderSheet orderSheet) {
+        if (orderSheet == null) throw new EcommerceException(ErrorCode.NOT_FOUND_ORDER_SHEET);
 
-        //유저 확인
-        User user = userService.validateUserByUserId(request.getUserId());
-
-        //주문서 생성
-        OrderSheet orderSheet = OrderSheet.from(request);
-        orderSheet.log();
         Order order = orderRepository.create(orderSheet);
+        if (order == null) throw new EcommerceException(ErrorCode.FAIL_CREATE_ORDER);
+
+        createOrderItems(order);
+        return order;
+    }
+
+    /**
+     * 주문 상품 생성
+     * @param order
+     * @return
+     */
+    @Transactional
+    public Order createOrderItems(Order order) {
         List<OrderItem> orderItems = orderItemRepository.create(order);
+        if (orderItems.size() != order.getOrderItems().size())
+            throw new EcommerceException(ErrorCode.FAIL_CREATE_ORDER_ITEMS);
 
-        try {
-            //잔액(포인트) 확인
-            userService.comparePoint(user, orderSheet.getTotalPrice());
-
-            //결제
-            paymentService.pay(user, order);
-            updateOrderStatus(order, PAID);
-
-            //재고 처리
-            productService.decreaseStock(orderSheet.getOrderItems());
-            updateOrderStatus(order, COMPLETED);
-            
-            return order;
-        } catch (EcommerceException e) {
-            updateOrderStatus(order, CANCELED);
-            updateOrderItemStatus(orderItems, OrderItemStatus.CANCELED);
-            throw e;
-        }
+        return order;
     }
 
     /**
@@ -79,9 +81,8 @@ public class OrderService {
             (status == PAID && order.getOrderStatus() != PENDING) ||
             (status == COMPLETED && order.getOrderStatus() != PAID)
         ) {
-            throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
+            throw new EcommerceException(ErrorCode.INVALID_ORDER_STATUS);
         }
-
         orderRepository.updateStatus(order.getOrderId(), status);
         order.setOrderStatus(status);
     }
@@ -102,7 +103,6 @@ public class OrderService {
     @Scheduled(fixedRate = 10000) 
     public void updateOrderItemStatusToDELIVERED() {
         List<Long> preparingItems = orderItemRepository.findPreparingItems();
-
         orderItemRepository.updateStatus(preparingItems, DELIVERED);
     }
 }

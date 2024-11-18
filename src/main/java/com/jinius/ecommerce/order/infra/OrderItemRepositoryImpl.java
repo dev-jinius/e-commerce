@@ -1,13 +1,17 @@
 package com.jinius.ecommerce.order.infra;
 
 import com.jinius.ecommerce.order.domain.*;
+import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderItem;
+import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
+import com.jinius.ecommerce.order.infra.entity.OrderItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.jinius.ecommerce.order.domain.OrderItemStatus.PREPARING;
+import static com.jinius.ecommerce.order.domain.model.OrderItemStatus.PREPARING;
 
 @Repository
 @RequiredArgsConstructor

@@ -2,7 +2,6 @@ package com.jinius.ecommerce.product.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.domain.OrderItem;
 import lombok.*;
 
 @Data

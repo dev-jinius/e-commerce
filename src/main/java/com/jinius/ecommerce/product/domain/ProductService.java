@@ -2,14 +2,13 @@ package com.jinius.ecommerce.product.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.domain.OrderItem;
+import com.jinius.ecommerce.order.domain.model.OrderItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
