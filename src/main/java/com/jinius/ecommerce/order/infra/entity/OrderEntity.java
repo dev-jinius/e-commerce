@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import static com.jinius.ecommerce.order.domain.model.OrderStatus.PENDING;
-import static java.time.LocalDateTime.now;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -76,31 +75,11 @@ public class OrderEntity {
                 .build();
     }
 
-    public static OrderEntity fromDomain(Order order) {
-        return OrderEntity.builder()
-                .id(order.getOrderId())
-                .userId(order.getUserId())
-                .status(order.getOrderStatus())
-                .totalPrice(order.getTotalPrice())
-                .build();
-    }
-
-
     public Order toDomain(OrderSheet orderSheet) {
         return Order.builder()
                 .orderId(getId())
                 .userId(getUserId())
                 .orderItems(orderSheet.getOrderItems())
-                .totalPrice(getTotalPrice())
-                .orderStatus(getStatus())
-                .orderDate(getCreatedAt())
-                .build();
-    }
-
-    public Order toDomain() {
-        return Order.builder()
-                .orderId(getId())
-                .userId(getUserId())
                 .totalPrice(getTotalPrice())
                 .orderStatus(getStatus())
                 .orderDate(getCreatedAt())

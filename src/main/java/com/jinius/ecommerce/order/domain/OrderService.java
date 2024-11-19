@@ -103,6 +103,8 @@ public class OrderService {
     @Scheduled(fixedRate = 10000) 
     public void updateOrderItemStatusToDELIVERED() {
         List<Long> preparingItems = orderItemRepository.findPreparingItems();
+        if (preparingItems.size() == 0) return;
+
         orderItemRepository.updateStatus(preparingItems, DELIVERED);
     }
 }
