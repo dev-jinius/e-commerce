@@ -30,6 +30,7 @@ public enum ErrorCode {
     ALREADY_PAID_ORDER(HttpStatus.BAD_REQUEST.value(), "ERR-106", "이미 결제한 주문입니다."),
     FAIL_CREATE_ORDER(HttpStatus.NOT_FOUND.value(), "ERR-107", "주문 생성에 실패했습니다."),
     FAIL_CREATE_ORDER_ITEMS(HttpStatus.NOT_FOUND.value(), "ERR-108", "상품 주문 생성에 실패했습니다."),
+    NOT_SUPPORT_PAYMENT_TYPE(HttpStatus.BAD_REQUEST.value(), "ERR-109", "지원하지 않는 결제 타입입니다."),
 
     /**
      * 상품 관련 예외

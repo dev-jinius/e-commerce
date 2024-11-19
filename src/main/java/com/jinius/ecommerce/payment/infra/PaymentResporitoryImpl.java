@@ -1,7 +1,8 @@
 package com.jinius.ecommerce.payment.infra;
 
-import com.jinius.ecommerce.payment.domain.Payment;
+import com.jinius.ecommerce.payment.domain.model.Payment;
 import com.jinius.ecommerce.payment.domain.PaymentRepository;
+import com.jinius.ecommerce.payment.infra.entity.PaymentEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
