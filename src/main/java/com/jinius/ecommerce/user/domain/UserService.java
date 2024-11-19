@@ -1,11 +1,10 @@
 package com.jinius.ecommerce.user.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
+import com.jinius.ecommerce.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigInteger;
 
 import static com.jinius.ecommerce.common.ErrorCode.NOT_FOUND_USER;
 

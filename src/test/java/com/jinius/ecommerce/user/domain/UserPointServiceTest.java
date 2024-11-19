@@ -1,6 +1,8 @@
 package com.jinius.ecommerce.user.domain;
 
 import com.jinius.ecommerce.Fixture;
+import com.jinius.ecommerce.user.domain.model.Charge;
+import com.jinius.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigInteger;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -26,17 +27,17 @@ class UserPointServiceTest {
     void chargePoint_success() {
         //given
         Long userId = 1L;
-        BigInteger chargePoint = BigInteger.valueOf(30000);
-        User dbUser = Fixture.user(userId, 50000);  //id: 1, chargePoint:50000
-        User expectUser = Fixture.user(userId, 80000);
+        User dbUser = Fixture.user(userId, 100000);
+        Charge requestCharge = new Charge(dbUser, BigInteger.valueOf(30000));
+        User expectUser = Fixture.user(userId, 130000);
 
         //when
         when(userRepository.save(any())).thenReturn(expectUser);
-        User chargedUser = sut.chargePoint(dbUser, chargePoint);
+        User chargedUser = sut.chargePoint(requestCharge);
 
         //then
         assert chargedUser.getUserId() == dbUser.getUserId();
-        assert (chargedUser.getPoint()).equals(BigInteger.valueOf(80000));
-        assert dbUser.getPoint().equals(chargedUser.getPoint());
+        assert chargedUser.getPoint().equals(expectUser.getPoint());
+        assert (dbUser.getPoint().add(requestCharge.getChargePoint())).equals(chargedUser.getPoint());
     }
 }

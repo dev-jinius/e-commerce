@@ -5,7 +5,7 @@ import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderStatus;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

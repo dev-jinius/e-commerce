@@ -9,7 +9,7 @@ import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.payment.domain.PaymentService;
 import com.jinius.ecommerce.product.domain.ProductService;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,6 @@
 package com.jinius.ecommerce.user.api.dto;
 
 import com.jinius.ecommerce.user.application.dto.UserPointDto;
-import com.jinius.ecommerce.user.domain.User;
-import com.jinius.ecommerce.user.domain.UserPointService;
 import lombok.*;
 
 import java.math.BigInteger;

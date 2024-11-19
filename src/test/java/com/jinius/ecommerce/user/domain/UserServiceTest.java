@@ -3,6 +3,7 @@ package com.jinius.ecommerce.user.domain;
 import com.jinius.ecommerce.Fixture;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

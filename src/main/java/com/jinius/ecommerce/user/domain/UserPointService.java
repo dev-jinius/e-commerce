@@ -1,10 +1,10 @@
 package com.jinius.ecommerce.user.domain;
 
+import com.jinius.ecommerce.user.domain.model.Charge;
+import com.jinius.ecommerce.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigInteger;
 
 @Component
 @RequiredArgsConstructor
@@ -14,13 +14,11 @@ public class UserPointService {
 
     /**
      * 포인트 충전
-     * @param user
-     * @param point
+     * @param charge
      * @return
      */
     @Transactional
-    public User chargePoint(User user, BigInteger point) {
-        user.addPoint(point);
-        return userRepository.save(user);
+    public User chargePoint(Charge charge) {
+        return userRepository.save(charge.toChargeUser());
     }
 }

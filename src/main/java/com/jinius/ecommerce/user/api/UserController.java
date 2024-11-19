@@ -33,7 +33,6 @@ public class UserController {
     @Operation(summary = "유저 포인트 충전 API", description = "유저 포인트 충전하기")
     @Schema(description = "유저 포인트 충전 응답")
     public ResponseEntity<UserPointResponse> chargePoint(@RequestBody @Valid UserChargeRequest request) {
-
-        return ResponseEntity.ok().body(UserPointResponse.from(userPointFacade.charge(request.getUserId(), request.getChargePoint())));
+        return ResponseEntity.ok().body(UserPointResponse.from(userPointFacade.charge(request.toFacade())));
     }
 }

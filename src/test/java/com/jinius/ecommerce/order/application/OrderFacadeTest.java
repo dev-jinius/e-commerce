@@ -12,7 +12,7 @@ import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.order.domain.model.OrderStatus;
 import com.jinius.ecommerce.payment.domain.Payment;
 import com.jinius.ecommerce.payment.domain.PaymentService;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
