@@ -8,7 +8,6 @@ import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.payment.domain.PaymentService;
-import com.jinius.ecommerce.payment.domain.model.OrderPayment;
 import com.jinius.ecommerce.payment.domain.model.Payment;
 import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.product.domain.ProductService;
