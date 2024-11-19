@@ -4,7 +4,7 @@ import com.jinius.ecommerce.order.domain.model.*;
 import com.jinius.ecommerce.payment.domain.Payment;
 import com.jinius.ecommerce.product.domain.Product;
 import com.jinius.ecommerce.product.domain.Stock;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.domain.model.User;
 import com.navercorp.fixturemonkey.ArbitraryBuilder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntrospector;

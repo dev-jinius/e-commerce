@@ -3,7 +3,7 @@ package com.jinius.ecommerce.payment.domain;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.model.Order;
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;

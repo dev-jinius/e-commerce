@@ -1,6 +1,6 @@
-package com.jinius.ecommerce.user.api;
+package com.jinius.ecommerce.user.api.dto;
 
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.application.dto.UserPointDto;
 import lombok.*;
 
 import java.math.BigInteger;
@@ -14,11 +14,11 @@ public class UserPointResponse {
     private String userName;
     private BigInteger point;
 
-    public static UserPointResponse from(User user) {
+    public static UserPointResponse from(UserPointDto dto) {
         return UserPointResponse.builder()
-                .userId(user.getUserId())
-                .userName(user.getName())
-                .point(user.getPoint())
+                .userId(dto.getUserId())
+                .userName(dto.getUserName())
+                .point(dto.getPoint())
                 .build();
     }
 }

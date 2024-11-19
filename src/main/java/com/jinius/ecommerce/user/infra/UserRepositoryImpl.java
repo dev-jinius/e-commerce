@@ -1,7 +1,8 @@
 package com.jinius.ecommerce.user.infra;
 
-import com.jinius.ecommerce.user.domain.User;
+import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserRepository;
+import com.jinius.ecommerce.user.infra.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,11 +17,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(Long userId) {
-        return userJpaRepository.findById(userId).map(userEntity -> userEntity.toDomain());
+        return userJpaRepository.findById(userId).map(userEntity -> userEntity.toUser());
     }
 
     @Override
-    public User save(User user) {
-        return userJpaRepository.saveAndFlush(UserEntity.fromDomain(user)).toDomain();
+    public User save(User chargeUser) {
+        return userJpaRepository.saveAndFlush(UserEntity.fromUser(chargeUser)).toUser();
     }
 }
