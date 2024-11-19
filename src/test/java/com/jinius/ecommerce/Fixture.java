@@ -1,7 +1,10 @@
 package com.jinius.ecommerce;
 
 import com.jinius.ecommerce.order.domain.model.*;
-import com.jinius.ecommerce.payment.domain.Payment;
+import com.jinius.ecommerce.payment.domain.model.OrderPayment;
+import com.jinius.ecommerce.payment.domain.model.Payment;
+import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
+import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.product.domain.Product;
 import com.jinius.ecommerce.product.domain.Stock;
 import com.jinius.ecommerce.user.domain.model.User;
@@ -12,6 +15,8 @@ import com.navercorp.fixturemonkey.api.introspector.FieldReflectionArbitraryIntr
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.jinius.ecommerce.payment.domain.model.PaymentType.POINT;
 
 public class Fixture {
     public static final FixtureMonkey fixtureMonkey = FixtureMonkey.builder()
@@ -105,13 +110,23 @@ public class Fixture {
     /**
      * 결제 관련 Fixture
      */
-    public static Payment paymentOrder(User user, Order order) {
-        return fixPointPayment()
+    public static OrderPayment orderPayment(User user, Order order, PaymentType paymentType) {
+        return fixtureMonkey.giveMeBuilder(OrderPayment.class)
                 .set("orderId", order.getOrderId())
                 .set("userId", user.getUserId())
-                .set("point", order.getTotalPrice())
-                .set("status", "PENDING")
-                .set("paidAt", LocalDateTime.now())
+                .set("userPoint", user.getPoint())
+                .set("type", paymentType)
+                .set("orderPrice", order.getTotalPrice())
+                .sample();
+    }
+    public static Payment payment(OrderPayment orderPayment) {
+        return fixtureMonkey.giveMeBuilder(Payment.class)
+                .set("orderId", orderPayment.getOrderId())
+                .set("userId", orderPayment.getUserId())
+                .set("type", orderPayment.getType())
+                .set("amount", orderPayment.getType() == POINT ? BigInteger.ZERO : orderPayment.getOrderPrice())
+                .set("point", orderPayment.getType() == POINT ? orderPayment.getOrderPrice() : BigInteger.ZERO)
+                .set("status", PaymentStatus.PAID)
                 .sample();
     }
 

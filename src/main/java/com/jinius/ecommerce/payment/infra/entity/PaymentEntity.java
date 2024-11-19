@@ -1,10 +1,10 @@
-package com.jinius.ecommerce.payment.infra;
+package com.jinius.ecommerce.payment.infra.entity;
 
-import com.jinius.ecommerce.payment.domain.Payment;
+import com.jinius.ecommerce.payment.domain.model.Payment;
+import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
+import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -27,7 +27,7 @@ public class PaymentEntity {
 
     private Long userId;
 
-    private String type;
+    private PaymentType type;
 
     private BigInteger amount;
 
@@ -41,7 +41,7 @@ public class PaymentEntity {
      *  REFUNDED - 전체 환불
      *  PARTIAL_REFUND - 부분 환불
      */
-    private String status;
+    private PaymentStatus status;
 
     @CreatedDate
     @Column(updatable = false)
@@ -58,8 +58,6 @@ public class PaymentEntity {
                 .amount(payment.getAmount())
                 .point(payment.getPoint())
                 .status(payment.getStatus())
-                .createAt(payment.getCreateAt())
-                .updateAt(payment.getUpdateAt())
                 .build();
     }
 
@@ -71,8 +69,6 @@ public class PaymentEntity {
                 .amount(this.amount)
                 .point(this.point)
                 .status(this.status)
-                .createAt(this.createAt)
-                .updateAt(this.updateAt)
                 .build();
     }
 }

@@ -10,8 +10,11 @@ import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.order.domain.model.OrderStatus;
-import com.jinius.ecommerce.payment.domain.Payment;
+import com.jinius.ecommerce.payment.domain.model.OrderPayment;
+import com.jinius.ecommerce.payment.domain.model.Payment;
 import com.jinius.ecommerce.payment.domain.PaymentService;
+import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
+import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +32,7 @@ import java.util.List;
 import static com.jinius.ecommerce.common.ErrorCode.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -117,7 +121,7 @@ public class OrderFacadeTest {
     }
 
     @Test
-    @DisplayName("잔액 포인트 부족으로 결제 실패 시 주문/주문상품 상태 업데이트 후 FAIL_CREATE_ORDER 예외 발생으로 주문 취소")
+    @DisplayName("잔액 포인트 부족으로 결제 정보 생성 실패 시 주문/주문상품 상태 업데이트 후 FAIL_CREATE_ORDER 예외 발생으로 주문 취소")
     void order_fail_FAIL_NOT_ENOUGH_POINT() {
         //given
         Long userId = 1L;
@@ -132,7 +136,7 @@ public class OrderFacadeTest {
         given(userService.getUser(any())).willReturn(mockUser);
         given(orderService.createOrderSheet(any())).willReturn(mockOrderSheet);
         given(orderService.createOrder(any())).willReturn(mockOrder);
-        given(paymentService.pay(any(), any()))
+        given(paymentService.createPayment(any()))
                 .willThrow(new EcommerceException(NOT_ENOUGH_POINT));
 
         //when
@@ -163,19 +167,12 @@ public class OrderFacadeTest {
                 .build();
         OrderSheet mockOrderSheet = Fixture.orderSheet(userId);
         Order mockOrder = Fixture.order(userId);
-        Payment mockPayment = Payment.builder()
-                .orderId(mockOrder.getOrderId())
-                .userId(mockUser.getUserId())
-                .type("POINT")
-                .amount(BigInteger.ZERO)
-                .point(mockOrder.getTotalPrice())
-                .status("PENDING")
-                .build();
+        Payment mockPayment = Fixture.payment(Fixture.orderPayment(mockUser, mockOrder, PaymentType.POINT));
 
         given(userService.getUser(any())).willReturn(mockUser);
         given(orderService.createOrderSheet(any())).willReturn(mockOrderSheet);
         given(orderService.createOrder(any())).willReturn(mockOrder);
-        given(paymentService.pay(any(), any())).willReturn(mockPayment);
+        given(paymentService.createPayment(any())).willReturn(mockPayment);
 
         //when
         sut.order(orderRequest.toFacade());
