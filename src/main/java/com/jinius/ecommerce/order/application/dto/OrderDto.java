@@ -4,25 +4,26 @@ import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItem;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.payment.domain.model.OrderPayment;
-import com.jinius.ecommerce.payment.domain.model.Payment;
-import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
 import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.user.domain.model.User;
 import lombok.*;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.jinius.ecommerce.order.domain.model.OrderStatus.PENDING;
-import static com.jinius.ecommerce.payment.domain.model.PaymentStatus.PAID;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class OrderFacadeRequest {
+public class OrderDto {
+
     private Long userId;                                //유저 ID
-    private List<OrderItemFacadeRequest> orderItems;    //주문 상품 목록
+    private List<OrderItemDto> orderItems;              //주문 상품 목록
+    private Long orderId;                               //주문 ID
+    private BigInteger totalPrice;                      //총 주문 가격
+    private LocalDateTime orderedAt;                    //주문 일시
 
     public OrderSheet toOrderSheet() {
         List<OrderItem> orderItems = this.orderItems.stream()
@@ -39,8 +40,20 @@ public class OrderFacadeRequest {
         return OrderPayment.builder()
                 .userId(order.getUserId())
                 .orderId(order.getOrderId())
+                .userPoint(user.getPoint())
                 .type(paymentType)
                 .orderPrice(order.getTotalPrice())
+                .build();
+    }
+
+    public static OrderDto from(Order order) {
+        return OrderDto.builder()
+                .orderId(order.getOrderId())
+                .totalPrice(order.getTotalPrice())
+                .orderedAt(order.getOrderDate())
+                .orderItems(order.getOrderItems().stream()
+                        .map(OrderItemDto::from)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
