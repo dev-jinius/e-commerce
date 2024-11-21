@@ -9,13 +9,13 @@ import java.math.BigInteger;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class OrderItemFacadeResponse {
-    private Long productId;     //상품 ID
-    private BigInteger price;   //상품 가격
-    private Long quantity;      //상품 수량
+public class OrderItemDto {
+    private Long productId;         //상품 ID
+    private BigInteger price;       //상품 가격
+    private Long quantity;          //상품 수량
 
-    public static OrderItemFacadeResponse from(OrderItem orderItem) {
-        return OrderItemFacadeResponse.builder()
+    public static OrderItemDto from(OrderItem orderItem) {
+        return OrderItemDto.builder()
                 .productId(orderItem.getProductId())
                 .price(orderItem.getProductPrice())
                 .quantity(orderItem.getQuantity())

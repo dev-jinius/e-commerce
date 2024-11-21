@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -103,6 +102,8 @@ public class OrderService {
     @Scheduled(fixedRate = 10000) 
     public void updateOrderItemStatusToDELIVERED() {
         List<Long> preparingItems = orderItemRepository.findPreparingItems();
+        if (preparingItems.size() == 0) return;
+
         orderItemRepository.updateStatus(preparingItems, DELIVERED);
     }
 }
