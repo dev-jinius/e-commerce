@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.product.domain;
+package com.jinius.ecommerce.product.domain.model;
 
 import lombok.*;
 
