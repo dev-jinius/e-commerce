@@ -1,19 +1,17 @@
 package com.jinius.ecommerce.payment.domain.model;
 
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
 import lombok.*;
 
 import java.math.BigInteger;
 
-import static com.jinius.ecommerce.payment.domain.model.PaymentType.POINT;
-
+/**
+ * 주문 결제 정보
+ */
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Payment {
-    private Long paymentId;
+public class OrderPaymentInfo {
     private Long orderId;
     private Long userId;
     private PaymentType type;

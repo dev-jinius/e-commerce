@@ -57,6 +57,7 @@ CREATE TABLE `tb_payment` (
     `type`              VARCHAR(20) NOT NULL COMMENT '결제 유형',
     `amount`            BIGINT NOT NULL COMMENT '결제 금액',
     `point`             BIGINT NOT NULL COMMENT '포인트',
+    `status`            VARCHAR(20) NOT NULL COMMENT '결제 상태',
     `created_at`        DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '주문 일시',
     `updated_at`        DATETIME DEFAULT CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP COMMENT '수정 일시',
     PRIMARY KEY (`payment_id`),

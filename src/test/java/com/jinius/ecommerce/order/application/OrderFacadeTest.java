@@ -167,7 +167,7 @@ public class OrderFacadeTest {
                 .build();
         OrderSheet mockOrderSheet = Fixture.orderSheet(userId);
         Order mockOrder = Fixture.order(userId);
-        Payment mockPayment = Fixture.payment(Fixture.orderPayment(mockUser, mockOrder, PaymentType.POINT));
+        Payment mockPayment = Fixture.payment(Fixture.orderPaymentInfoForPoint(mockUser, mockOrder, PaymentType.POINT));
 
         given(userService.getUser(any())).willReturn(mockUser);
         given(orderService.createOrderSheet(any())).willReturn(mockOrderSheet);
