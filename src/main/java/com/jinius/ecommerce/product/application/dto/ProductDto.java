@@ -1,27 +1,26 @@
-package com.jinius.ecommerce.product.api;
+package com.jinius.ecommerce.product.application.dto;
 
-import com.jinius.ecommerce.product.domain.Product;
-import com.jinius.ecommerce.product.domain.Top5Product;
+import com.jinius.ecommerce.product.domain.model.Product;
 import lombok.*;
 
 import java.math.BigInteger;
 
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ProductResponse {
+public class ProductDto {
     private Long productId;
     private String productName;
     private BigInteger productPrice;
-    private Long stockQuantity;
+    private Long quantity;
 
-    public static ProductResponse from(Product product) {
-        return ProductResponse.builder()
+    public static ProductDto fromDomain(Product product) {
+        return ProductDto.builder()
                 .productId(product.getProductId())
                 .productName(product.getProductName())
                 .productPrice(product.getProductPrice())
-                .stockQuantity(product.getQuantity())
+                .quantity(product.getQuantity())
                 .build();
     }
 }

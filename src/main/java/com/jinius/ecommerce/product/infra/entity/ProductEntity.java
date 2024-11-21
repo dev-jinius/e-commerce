@@ -1,7 +1,7 @@
-package com.jinius.ecommerce.product.infra;
+package com.jinius.ecommerce.product.infra.entity;
 
-import com.jinius.ecommerce.product.domain.Product;
-import com.jinius.ecommerce.product.domain.Stock;
+import com.jinius.ecommerce.product.domain.model.Product;
+import com.jinius.ecommerce.product.domain.model.Stock;
 import jakarta.persistence.*;
 import lombok.*;
 

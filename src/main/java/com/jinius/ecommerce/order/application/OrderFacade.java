@@ -10,7 +10,7 @@ import com.jinius.ecommerce.payment.domain.PaymentService;
 import com.jinius.ecommerce.payment.domain.model.Payment;
 import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
 import com.jinius.ecommerce.payment.domain.model.PaymentType;
-import com.jinius.ecommerce.product.domain.ProductService;
+import com.jinius.ecommerce.product.domain.StockService;
 import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class OrderFacade {
     private final OrderService orderService;        //주문 서비스
     private final UserService userService;          //유저 서비스
     private final PaymentService paymentService;    //결제 서비스
-    private final ProductService productService;    //상품 서비스
+    private final StockService stockService;        //재고 서비스
 
     /**
      * 주문 요청 처리
@@ -51,7 +51,7 @@ public class OrderFacade {
             orderService.updateOrderStatus(order, PAID);
 
             //재고 처리
-            productService.decreaseStock(order.getOrderItems());
+            stockService.decreaseStock(order.getOrderItems());
             orderService.updateOrderStatus(order, COMPLETED);
 
             return OrderDto.from(order);
