@@ -39,6 +39,7 @@ public class OrderFacadeRequest {
         return OrderPayment.builder()
                 .userId(order.getUserId())
                 .orderId(order.getOrderId())
+                .userPoint(user.getPoint())
                 .type(paymentType)
                 .orderPrice(order.getTotalPrice())
                 .build();

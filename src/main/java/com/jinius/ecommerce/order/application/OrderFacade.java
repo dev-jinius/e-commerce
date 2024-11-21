@@ -8,8 +8,8 @@ import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.payment.domain.PaymentService;
-import com.jinius.ecommerce.payment.domain.model.OrderPayment;
 import com.jinius.ecommerce.payment.domain.model.Payment;
+import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
 import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.product.domain.ProductService;
 import com.jinius.ecommerce.user.domain.model.User;
@@ -48,7 +48,7 @@ public class OrderFacade {
             //결제 정보 생성
             Payment payment = paymentService.createPayment(request.toOrderPayment(user, order, PaymentType.POINT));
             //결제 처리
-            paymentService.pay(payment);
+            paymentService.updateStatus(payment, PaymentStatus.PAID);
             orderService.updateOrderStatus(order, PAID);
 
             //재고 처리

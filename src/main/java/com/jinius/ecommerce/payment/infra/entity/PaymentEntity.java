@@ -1,17 +1,17 @@
 package com.jinius.ecommerce.payment.infra.entity;
 
-import com.jinius.ecommerce.payment.domain.model.Payment;
-import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
-import com.jinius.ecommerce.payment.domain.model.PaymentType;
+import com.jinius.ecommerce.payment.domain.model.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "tb_payment")
 @Getter
 @AllArgsConstructor
@@ -23,14 +23,19 @@ public class PaymentEntity {
     @Column(name = "payment_id")
     private Long id;
 
+    @Column(name = "order_id")
     private Long orderId;
 
+    @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "type")
     private PaymentType type;
 
+    @Column(name = "amount")
     private BigInteger amount;
 
+    @Column(name = "point")
     private BigInteger point;
 
     /**
@@ -41,17 +46,19 @@ public class PaymentEntity {
      *  REFUNDED - 전체 환불
      *  PARTIAL_REFUND - 부분 환불
      */
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
-    public static PaymentEntity fromDomain(Payment payment) {
+    public static PaymentEntity fromPayment(Payment payment) {
         return PaymentEntity.builder()
+                .id(payment.getPaymentId())
                 .orderId(payment.getOrderId())
                 .userId(payment.getUserId())
                 .type(payment.getType())
@@ -61,14 +68,26 @@ public class PaymentEntity {
                 .build();
     }
 
+    public static PaymentEntity fromOrderPaymentInfo(OrderPaymentInfo orderPaymentInfo) {
+        return PaymentEntity.builder()
+                .orderId(orderPaymentInfo.getOrderId())
+                .userId(orderPaymentInfo.getUserId())
+                .type(orderPaymentInfo.getType())
+                .amount(orderPaymentInfo.getAmount())
+                .point(orderPaymentInfo.getPoint())
+                .status(orderPaymentInfo.getStatus())
+                .build();
+    }
+
     public Payment toDomain() {
         return Payment.builder()
-                .orderId(this.orderId)
-                .userId(this.userId)
-                .type(this.type)
-                .amount(this.amount)
-                .point(this.point)
-                .status(this.status)
+                .paymentId(getId())
+                .orderId(getOrderId())
+                .userId(getUserId())
+                .type(getType())
+                .amount(getAmount())
+                .point(getPoint())
+                .status(getStatus())
                 .build();
     }
 }

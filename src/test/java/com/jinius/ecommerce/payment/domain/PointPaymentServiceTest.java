@@ -4,10 +4,7 @@ import com.jinius.ecommerce.Fixture;
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
 import com.jinius.ecommerce.order.domain.model.Order;
-import com.jinius.ecommerce.payment.domain.model.OrderPayment;
-import com.jinius.ecommerce.payment.domain.model.Payment;
-import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
-import com.jinius.ecommerce.payment.domain.model.PaymentType;
+import com.jinius.ecommerce.payment.domain.model.*;
 import com.jinius.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigInteger;
 
+import static com.jinius.ecommerce.payment.domain.model.PaymentStatus.PAID;
+import static com.jinius.ecommerce.payment.domain.model.PaymentStatus.PNEDING;
+import static com.jinius.ecommerce.payment.domain.model.PaymentType.POINT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +37,7 @@ class PointPaymentServiceTest {
         User user = Fixture.user(1L, 50000);
         Order order = Fixture.order(1L);
         order.setTotalPrice(BigInteger.valueOf(100000));
-        OrderPayment orderPayment = Fixture.orderPayment(user, order, PaymentType.POINT);
+        OrderPayment orderPayment = Fixture.orderPayment(user, order, POINT);
 
         //when
         Throwable exception = null;
@@ -58,7 +58,7 @@ class PointPaymentServiceTest {
         User user = Fixture.user(1L, 50000);
         Order order = Fixture.order(1L);
         order.setTotalPrice(BigInteger.valueOf(-100000));
-        OrderPayment orderPayment = Fixture.orderPayment(user, order, PaymentType.POINT);
+        OrderPayment orderPayment = Fixture.orderPayment(user, order, POINT);
 
         //when
         Throwable exception = null;
@@ -79,13 +79,13 @@ class PointPaymentServiceTest {
         User user = Fixture.user(1L, 100000);
         Order order = Fixture.order(1L);
         order.setTotalPrice(BigInteger.valueOf(50000));
-        Payment payment = Fixture.payment(Fixture.orderPayment(user, order, PaymentType.POINT));
-        payment.setStatus(PaymentStatus.PAID);
+        Payment payment = Fixture.payment(Fixture.orderPaymentInfoForPoint(user, order, POINT));
+        payment.setStatus(PAID);
 
         //when
         Throwable exception = null;
         try {
-            sut.pay(payment);
+            sut.updateStatus(payment, PAID);
         } catch (EcommerceException e) {
             exception = e;
         }
@@ -101,14 +101,13 @@ class PointPaymentServiceTest {
         User user = Fixture.user(1L, 100000);
         Order order = Fixture.order(1L);
         order.setTotalPrice(BigInteger.valueOf(50000));
-        Payment payment = Fixture.payment(Fixture.orderPayment(user, order, PaymentType.POINT));
-        payment.setStatus(PaymentStatus.PNEDING);
+        Payment payment = Fixture.payment(Fixture.orderPaymentInfoForPoint(user, order, POINT));
+        payment.setStatus(PNEDING);
 
         //when
-        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-        sut.pay(payment);
+        sut.updateStatus(payment, PAID);
 
-        assert payment.getType().equals(PaymentType.POINT);
-        verify(paymentRepository, atLeastOnce()).save(any());
+        assert payment.getType().equals(POINT);
+        verify(paymentRepository, atLeastOnce()).updateStatus(any());
     }
 }

@@ -16,7 +16,7 @@ DROP TABLE IF EXISTS `tb_orders`;
 CREATE TABLE `tb_orders` (
      `order_id`     INT      NOT NULL AUTO_INCREMENT COMMENT '주문 ID',
      `user_id`      INT      DEFAULT NULL COMMENT '유저 ID',
-     `status`       VARCHAR(15) DEFAULT NULL COMMENT '주문 상태',
+     `status`       VARCHAR(20) DEFAULT NULL COMMENT '주문 상태',
      `total_price`  BIGINT      DEFAULT NULL COMMENT '총 주문 금액',
      `created_at`   DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '주문 일시',
      `updated_at`   DATETIME DEFAULT CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP COMMENT '수정 일시',
@@ -32,7 +32,7 @@ CREATE TABLE `tb_order_item` (
      `product_id`       INT DEFAULT NULL COMMENT '상품 ID',
      `product_price`    BIGINT NOT NULL COMMENT '상품 가격',
      `quantity`         INT NOT NULL COMMENT '주문 수량',
-     `status`           VARCHAR(15) NOT NULL COMMENT '주문 상품 상태',
+     `status`           VARCHAR(20) NOT NULL COMMENT '주문 상품 상태',
      `created_at`       DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '주문 일시',
      `updated_at`       DATETIME DEFAULT CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP COMMENT '수정 일시',
      PRIMARY KEY (`order_item_id`),
@@ -57,6 +57,7 @@ CREATE TABLE `tb_payment` (
     `type`              VARCHAR(20) NOT NULL COMMENT '결제 유형',
     `amount`            BIGINT NOT NULL COMMENT '결제 금액',
     `point`             BIGINT NOT NULL COMMENT '포인트',
+    `status`            VARCHAR(20) NOT NULL COMMENT '결제 상태',
     `created_at`        DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '주문 일시',
     `updated_at`        DATETIME DEFAULT CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP COMMENT '수정 일시',
     PRIMARY KEY (`payment_id`),
@@ -71,6 +72,6 @@ CREATE TABLE `tb_cart` (
    `user_id`        INT DEFAULT NULL COMMENT '유저 ID',
    `item_id`        INT DEFAULT NULL COMMENT '상품 ID',
    `quantity`       INT DEFAULT NULL COMMENT '상품 수량',
-   `create_at`      DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '장바구니 생성 일시',
+   `created_at`      DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '장바구니 생성 일시',
    PRIMARY KEY (`cart_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
