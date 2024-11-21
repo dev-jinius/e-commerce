@@ -1,8 +1,7 @@
 package com.jinius.ecommerce.order.application;
 
 import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.order.application.dto.OrderFacadeRequest;
-import com.jinius.ecommerce.order.application.dto.OrderFacadeResponse;
+import com.jinius.ecommerce.order.application.dto.OrderDto;
 import com.jinius.ecommerce.order.domain.*;
 import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
@@ -34,7 +33,7 @@ public class OrderFacade {
      * @return
      */
     @Transactional
-    public OrderFacadeResponse order(OrderFacadeRequest request) {
+    public OrderDto order(OrderDto request) {
 
         //유저 확인
         User user = userService.getUser(request.getUserId());
@@ -54,7 +53,7 @@ public class OrderFacade {
             productService.decreaseStock(order.getOrderItems());
             orderService.updateOrderStatus(order, COMPLETED);
 
-            return OrderFacadeResponse.from(order);
+            return OrderDto.from(order);
         } catch (EcommerceException e) {
             // 주문 취소 상태 업데이트
             orderService.updateOrderStatus(order, CANCELED);
