@@ -76,6 +76,7 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: none        # none, create, create-drop, update, validate
+    defer-datasource-initialization: true
     open-in-view: false
     properties:
       hibernate:
@@ -84,6 +85,6 @@ spring:
         default_batch_fetch_size: 1000
   sql:
     init:
-      schema-locations: classpath:schema-mysql.sql
+#      schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
       mode: always

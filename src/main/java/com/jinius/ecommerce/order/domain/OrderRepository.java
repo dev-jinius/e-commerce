@@ -1,5 +1,9 @@
 package com.jinius.ecommerce.order.domain;
 
+import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderSheet;
+import com.jinius.ecommerce.order.domain.model.OrderStatus;
+
 public interface OrderRepository {
     
     //주문서 생성

@@ -1,0 +1,3 @@
+FROM mariadb:10.6
+
+EXPOSE 13306

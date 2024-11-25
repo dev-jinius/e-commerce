@@ -2,17 +2,19 @@ package com.jinius.ecommerce.product.domain;
 
 import com.jinius.ecommerce.common.EcommerceException;
 import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.order.domain.OrderItem;
+import com.jinius.ecommerce.product.domain.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 상품 서비스
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -20,24 +22,19 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     /**
-     * 재고 차감 처리
-     * @param orderItems
+     * 전체 상품 조회
+     * @return
      */
-    public void decreaseStock(List<OrderItem> orderItems) {
-
-        if (ObjectUtils.isEmpty(orderItems))
-            throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
-
-        for (OrderItem item : orderItems) {
-            //재고 조회
-            Stock stock = productRepository.findStockById(item.getProductId()).orElseThrow(() -> new EcommerceException(ErrorCode.NOT_FOUND_PRODUCT));
-            //재고 차감
-            stock.decreaseStock(item.getQuantity());
-            //차감한 재고 저장
-            productRepository.updateStock(stock);
-        }
+    @Transactional
+    public List<Product> getProducts() {
+        return productRepository.findAll();
     }
 
+    /**
+     * 인기 TOP 5 상품 조회
+     * @return
+     */
+    @Transactional
     public List<Product> getTop5Products() {
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(3);

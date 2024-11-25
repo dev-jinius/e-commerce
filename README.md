@@ -1,31 +1,41 @@
 # e-commerce
-e-커머스 상품 주문 서비스
+이 프로젝트는 TDD(테스트 주도 개발)와 클린 아키텍처를 기반으로 구축한 이커머스 서버 애플리케이션입니다.
+객체지향 설계 원칙(OCP, DIP)을 준수하며, 레이어드 아키텍처를 적용해 확장성과 유지보수성을 극대화했습니다.
 
-## 핵심기능
-- TDD
-- Layered + Clean Architecture
-- JPA
-- 동시성 제어
+추후 MSA(Microservices Architecture)로 확장 가능하도록 도메인 분리를 고려해 설계했습니다.
+
+## 주요 특징
+- TDD 적용 : 모든 비즈니스 로직은 테스트 주도 개발 방식을 통해 설계 및 구현
+- Layered + Clean Architecture : 도메인 중심 설계로 애플리케이션 핵심 로직을 보호하고 외부와 분리
+- OCP, DIP 준수
+- MSA 전환 고려한 설계
+  - 도메인 중심 설계와 DTO(Data Transfer Object)를 사용하여 서비스 간 독립성 확보
+  - 이벤트 기반 통신 구조를 도입해 비동기 메시징 방식으로 확장 가능
+  - 개별 도메인의 상태 및 데이터 관리가 독립적으로 수행될 수 있도록 설계
+- 데이터 무결성 보장: 재고 관리와 주문 처리의 동시성 문제를 고려하여 설계
 
 --- 
 ## Progress
-- ### [개발 환경](#environment)
+- ### [기술 스택](#tech-stack)
 - ### [요구 사항](#requirements)
 - ### [시나리오 설계](#1-시나리오-설계)
-    + #### [API Specs](#1-1-api-specs)
+    + #### [주요 기능](#1-1-주요-기능)
     + #### [시퀀스 다이어그램](#1-2-시퀀스-다이어그램-작성)
     + #### [ERD 설계](#1-3-erd-설계)
-- ### [API 개발](#2-api-개발)
-    + #### [Swagger 작성](#2-1-swagger-작성)
+- ### [API Specsification](#2-api-specification)
+    + #### [Swagger](#2-1-swagger-접속)
+- ### [Deep Dive](#3-deep-dive)
 ---
 
 
-## Environment
-- Framework/Language : `Spring Boot 3` `Java 17` `JPA` `gradle`
-- ORM : `jpa`
-- DB : `maria db`
-- test : `JUnit` `AssertJ`
-- IDE : `intellj`
+## Tech Stack
+- Backend: Java, Spring Boot
+- Database: MariaDB
+- Cache & Concurrency Control: Redis, Redisson, DB Lock(Optimistic Lock)
+- Build Tool: Gradle
+- Testing: JUnit5, AssertJ
+- Containerization: Docker
+- Version Control: Git
 
 ---
 
@@ -43,7 +53,7 @@ e-커머스 상품 주문 서비스
 
 
 ## 1. 시나리오 설계
-### 1-1 API Specs
+### 1-1 주요 기능
 
 1️⃣ 잔액 충전 / 조회 API
 
@@ -61,14 +71,8 @@ e-커머스 상품 주문 서비스
 - 결제는 기 충전된 잔액을 기반으로 수행하며 성공할 시 잔액을 차감한다.
 - 데이터 분석을 위해 결제 성공 시에 실시간으로 주문 정보를 외부 어플리케이션에 전송한다.
 
-
 4️⃣ 상위 상품 조회 API
 - 최근 3일간 가장 많이 팔린 상위 5개 상품 정보를 제공하는 API
-
-5️⃣ 장바구니 API
-
-- 사용자는 구매 이전에 관심 있는 상품들을 장바구니에 적재할 수 있다.
-- 이 기능을 제공하기 위해 `장바구니에 상품 추가/삭제` API 와 `장바구니 조회` API를 구현한다.
 
 ```
   💡 KEY POINT
@@ -233,6 +237,18 @@ sequenceDiagram
   ![이커머스](https://github.com/user-attachments/assets/38f6bd8b-6191-413e-b9bf-d5b4c85324e0)
 
 
-## 2. API 개발
+## 2. API specification
 ### 2-1 Swagger 접속
- - 로컬 : http://localhost:8080/swagger-ui/index.html
+ - http://localhost:8080/swagger-ui/index.html
+
+## 3. Deep Dive
+
+## 4. Manual
+1. application.yml에서 데이터베이스 설정 수정. 
+2. Docker, docker-compose를 사용해 애플리케이션을 컨테이너로 실행
+   - /docs/docker 위치에서 docker-compose up --build
+3. DB 실행 및 연결 확인
+   - host : localhost
+   - port : 13306
+4. API 테스트
+   - http://localhost:8080/swagger-ui/index.html
