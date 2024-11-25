@@ -2,8 +2,8 @@ spring:
   application.name: ecommerce
   config:
     group:
-        "dev": "dev"
-        "prod": "prod"
+      "dev": "dev"
+      "prod": "prod"
 
 # Swagger
 springdoc:
@@ -67,7 +67,7 @@ spring:
   # DB - MariaDB
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:13306/ecommerce?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mariadb://localhost:13306/jinius?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 
@@ -75,10 +75,16 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
-      ddl-auto: validate        # none, create, create-drop, update, validate
+      ddl-auto: none        # none, create, create-drop, update, validate
+    defer-datasource-initialization: true
     open-in-view: false
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         default_batch_fetch_size: 1000
+  sql:
+    init:
+#      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      mode: always
