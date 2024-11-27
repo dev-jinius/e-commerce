@@ -9,6 +9,7 @@ CREATE TABLE `tb_user` (
    `user_id`    INT NOT NULL AUTO_INCREMENT  COMMENT '유저 ID',
    `user_name`  VARCHAR(20) NOT NULL COMMENT '유저 이름',
    `point`      BIGINT(20) NOT NULL COMMENT '포인트',
+   `version`    INT NOT NULL COMMENT '버전',
    PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

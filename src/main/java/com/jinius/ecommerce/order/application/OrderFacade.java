@@ -1,6 +1,8 @@
 package com.jinius.ecommerce.order.application;
 
 import com.jinius.ecommerce.common.EcommerceException;
+import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.LockException;
 import com.jinius.ecommerce.order.application.dto.OrderDto;
 import com.jinius.ecommerce.order.domain.*;
 import com.jinius.ecommerce.order.domain.model.Order;
@@ -11,22 +13,27 @@ import com.jinius.ecommerce.payment.domain.model.Payment;
 import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
 import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.product.domain.StockService;
+import com.jinius.ecommerce.user.domain.UserPointService;
 import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.jinius.ecommerce.order.domain.model.OrderStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderFacade {
 
-    private final OrderService orderService;        //주문 서비스
-    private final UserService userService;          //유저 서비스
-    private final PaymentService paymentService;    //결제 서비스
-    private final StockService stockService;        //재고 서비스
+    private final OrderService orderService;            //주문 서비스
+    private final UserService userService;              //유저 서비스
+    private final UserPointService userPointService;    //유저 포인트 서비스
+    private final PaymentService paymentService;        //결제 서비스
+    private final StockService stockService;            //재고 서비스
 
     /**
      * 주문 요청 처리
@@ -47,6 +54,7 @@ public class OrderFacade {
             //결제 정보 생성
             Payment payment = paymentService.createPayment(request.toOrderPayment(user, order, PaymentType.POINT));
             //결제 처리
+            userPointService.usePoint(user, orderSheet.getTotalPrice());
             paymentService.updateStatus(payment, PaymentStatus.PAID);
             orderService.updateOrderStatus(order, PAID);
 
@@ -60,6 +68,9 @@ public class OrderFacade {
             orderService.updateOrderStatus(order, CANCELED);
             orderService.updateOrderItemStatus(order.getOrderItems(), OrderItemStatus.CANCELED);
             throw e;
+        } catch (OptimisticLockingFailureException e) {
+            log.info("[{}] 낙관적 락 발생 - 동시 결제 요청으로 인한 실패", request.getUserId());
+            throw new LockException(ErrorCode.OPTIMISTIC_LOCK);
         }
     }
 }

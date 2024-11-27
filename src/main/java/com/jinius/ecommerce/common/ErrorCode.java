@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    /**
+     * 낙관적 락 예외
+     */
+    OPTIMISTIC_LOCK(HttpStatus.BAD_REQUEST.value(), "ERR-L01", "요청이 많아 처리에 실패했습니다. 다시 시도해주세요."),
 
     /**
      * Path 파라미터 Validation 예외
