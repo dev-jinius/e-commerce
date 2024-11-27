@@ -1,5 +1,6 @@
 package com.jinius.ecommerce.user.infra;
 
+import com.jinius.ecommerce.user.domain.model.UpdateUser;
 import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserRepository;
 import com.jinius.ecommerce.user.infra.entity.UserEntity;
@@ -17,11 +18,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(Long userId) {
-        return userJpaRepository.findById(userId).map(userEntity -> userEntity.toUser());
+        return userJpaRepository.findById(userId).map(UserEntity::toUser);
     }
 
     @Override
-    public User save(User chargeUser) {
-        return userJpaRepository.saveAndFlush(UserEntity.fromUser(chargeUser)).toUser();
+    public int updateUserPoint(UpdateUser user) {
+        return userJpaRepository.updateUserPoint(user.getUserId(), user.getPoint(), user.getOriginVersion(), user.getNewVersion());
     }
 }

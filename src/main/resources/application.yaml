@@ -78,13 +78,21 @@ spring:
       ddl-auto: none        # none, create, create-drop, update, validate
     defer-datasource-initialization: true
     open-in-view: false
+    show_sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
         default_batch_fetch_size: 1000
   sql:
     init:
-#      schema-locations: classpath:schema.sql
+#      schema-locations: classpath:ddl.sql
       data-locations: classpath:data.sql
       mode: always
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
