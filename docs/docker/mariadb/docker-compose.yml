@@ -1,6 +1,6 @@
 services:
   mariadb:
-    build: ..
+    build: .
     container_name: local_mariadb
     ports:
       - "13306:3306"

@@ -2,6 +2,11 @@ spring:
   config:
     activate:
       on-profile: "test"
+  data:
+    redis:
+      host: ${REDIS_SERVER_IP}
+      port: ${REDIS_SERVER_PORT}
+      password: ${REDIS_SERVER_PASSWORD}
 
   # DB - MariaDB
   datasource:
