@@ -43,6 +43,7 @@ public class UserPointFacade {
     /**
      * 포인트 충전
      */
+    @Transactional
     public UserPointDto charge(ChargeDto chargeDto) {
         try {
             //유저 포인트 조회
@@ -54,6 +55,5 @@ public class UserPointFacade {
             log.info("[{}] 동시 포인트 충전 요청으로 인한 실패", chargeDto.getUserId());
             throw new LockException(ErrorCode.OPTIMISTIC_LOCK);
         }
-
     }
 }
