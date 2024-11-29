@@ -34,5 +34,5 @@ public interface ProductJPARepository extends JpaRepository<ProductEntity, Long>
     @Query(value = "UPDATE ProductEntity " +
             "SET quantity = :quantity " +
             "WHERE id = :id")
-    void updateStock(@Param("id") Long id, @Param("quantity") Long quantity);
+    int updateStock(@Param("id") Long id, @Param("quantity") Long quantity);
 }

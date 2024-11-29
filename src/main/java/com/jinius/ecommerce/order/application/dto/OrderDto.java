@@ -10,6 +10,7 @@ import lombok.*;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,8 @@ public class OrderDto {
     public OrderSheet toOrderSheet() {
         List<OrderItem> orderItems = this.orderItems.stream()
                 .map(item -> new OrderItem(item.getProductId(), item.getPrice(), item.getQuantity()))
-                .toList();
+                .sorted(Comparator.comparing(OrderItem::getProductId))
+                .collect(Collectors.toList());
 
         return OrderSheet.builder()
                 .userId(this.userId)

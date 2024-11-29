@@ -1,13 +1,11 @@
 package com.jinius.ecommerce.user.application;
 
 import com.jinius.ecommerce.Fixture;
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.user.application.dto.ChargeDto;
 import com.jinius.ecommerce.user.application.dto.UserPointDto;
-import com.jinius.ecommerce.user.domain.model.UpdateUser;
 import com.jinius.ecommerce.user.domain.model.User;
-import com.jinius.ecommerce.user.domain.UserPointService;
 import com.jinius.ecommerce.user.domain.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 
-import static com.jinius.ecommerce.common.ErrorCode.NOT_FOUND_USER;
+import static com.jinius.ecommerce.common.exception.ErrorCode.NOT_FOUND_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

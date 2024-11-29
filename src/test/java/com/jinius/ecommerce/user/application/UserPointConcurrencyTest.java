@@ -1,8 +1,7 @@
 package com.jinius.ecommerce.user.application;
 
-import com.jinius.ecommerce.Fixture;
-import com.jinius.ecommerce.common.ErrorCode;
-import com.jinius.ecommerce.common.LockException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
+import com.jinius.ecommerce.common.exception.LockException;
 import com.jinius.ecommerce.user.application.dto.ChargeDto;
 import com.jinius.ecommerce.user.domain.UserService;
 import com.jinius.ecommerce.user.domain.model.User;
@@ -17,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

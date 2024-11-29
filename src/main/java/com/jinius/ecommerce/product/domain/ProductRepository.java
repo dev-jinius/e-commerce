@@ -12,7 +12,7 @@ public interface ProductRepository {
 
     Optional<Stock> findStockById(Long productId);
 
-    void updateStock(Stock stock);
+    int updateStock(Stock stock);
 
     List<Stock> findStocksByIdIn(List<Long> productIds);
 

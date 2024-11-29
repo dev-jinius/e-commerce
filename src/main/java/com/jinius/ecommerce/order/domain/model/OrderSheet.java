@@ -1,7 +1,5 @@
 package com.jinius.ecommerce.order.domain.model;
 
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
