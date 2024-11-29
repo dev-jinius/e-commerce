@@ -1,13 +1,10 @@
-package com.jinius.ecommerce.common;
+package com.jinius.ecommerce.common.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.jinius.ecommerce.common.validation.NumberValidator;
-import com.jinius.ecommerce.common.validation.ValidNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -77,6 +74,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = EcommerceException.class)
     public ResponseEntity<ErrorResponse> handleException(EcommerceException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getErrorCode().getCode(), e.getErrorCode().getMessage()));
+    }
+
+    @ExceptionHandler(value = LockException.class)
+    public ResponseEntity<ErrorResponse> handleException(LockException e) {
         log.warn(e.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getErrorCode().getCode(), e.getErrorCode().getMessage()));
     }

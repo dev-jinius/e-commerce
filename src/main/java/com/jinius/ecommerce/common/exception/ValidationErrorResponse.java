@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.common;
+package com.jinius.ecommerce.common.exception;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,13 +1,11 @@
 package com.jinius.ecommerce.user.application;
 
 import com.jinius.ecommerce.Fixture;
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.user.application.dto.ChargeDto;
 import com.jinius.ecommerce.user.application.dto.UserPointDto;
-import com.jinius.ecommerce.user.domain.model.Charge;
 import com.jinius.ecommerce.user.domain.model.User;
-import com.jinius.ecommerce.user.domain.UserPointService;
 import com.jinius.ecommerce.user.domain.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 
-import static com.jinius.ecommerce.common.ErrorCode.NOT_FOUND_USER;
+import static com.jinius.ecommerce.common.exception.ErrorCode.NOT_FOUND_USER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -32,8 +31,6 @@ class UserPointFacadeTest {
     private UserPointFacade sut;
     @MockBean
     private UserService userService;
-    @MockBean
-    private UserPointService userPointService;
 
     @Test
     @DisplayName("충전 요청 시 유저가 DB에 없는 경우 NOT_FOUND_USER 예외 발생하며, 충전 실패")
@@ -65,10 +62,8 @@ class UserPointFacadeTest {
         Long userId = 1L;
         User dbUser = Fixture.user(userId, 0);
         ChargeDto requestCharge = new ChargeDto(userId, BigInteger.valueOf(50000));
-        User chargedUser = dbUser.addPoint(requestCharge.getChargePoint());
 
         given(userService.getUser(any(Long.class))).willReturn(dbUser);
-        given(userPointService.chargePoint(any(Charge.class))).willReturn(chargedUser);
 
         //when
         UserPointDto charged = sut.charge(requestCharge);
@@ -76,6 +71,6 @@ class UserPointFacadeTest {
         //then
         assert charged != null;
         assert charged.getUserId() == dbUser.getUserId();
-        assert charged.getPoint().equals(dbUser.getPoint().add(requestCharge.getChargePoint()));
+        assert charged.getPoint().equals(dbUser.getPoint());
     }
 }

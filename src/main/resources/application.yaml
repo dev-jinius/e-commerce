@@ -4,6 +4,11 @@ spring:
     group:
       "dev": "dev"
       "prod": "prod"
+  data:
+    redis:
+      host: ${REDIS_SERVER_IP}
+      port: ${REDIS_SERVER_PORT}
+      password: ${REDIS_SERVER_PASSWORD}
 
 # Swagger
 springdoc:
@@ -22,7 +27,6 @@ springdoc:
 
 server:
   port: 8080
-
 ---
 spring:
   config:
@@ -78,13 +82,21 @@ spring:
       ddl-auto: none        # none, create, create-drop, update, validate
     defer-datasource-initialization: true
     open-in-view: false
+    show_sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
         default_batch_fetch_size: 1000
   sql:
     init:
-#      schema-locations: classpath:schema.sql
+#      schema-locations: classpath:ddl.sql
       data-locations: classpath:data.sql
       mode: always
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace

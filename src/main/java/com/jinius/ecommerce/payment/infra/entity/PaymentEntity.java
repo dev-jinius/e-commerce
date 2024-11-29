@@ -29,7 +29,7 @@ public class PaymentEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private PaymentType type;
 
     @Column(name = "amount")

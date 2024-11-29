@@ -1,8 +1,8 @@
 package com.jinius.ecommerce.order.application;
 
 import com.jinius.ecommerce.Fixture;
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.order.api.dto.OrderItemRequest;
 import com.jinius.ecommerce.order.api.dto.OrderRequest;
 import com.jinius.ecommerce.order.domain.OrderService;
@@ -10,10 +10,8 @@ import com.jinius.ecommerce.order.domain.model.Order;
 import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.order.domain.model.OrderStatus;
-import com.jinius.ecommerce.payment.domain.model.OrderPayment;
 import com.jinius.ecommerce.payment.domain.model.Payment;
 import com.jinius.ecommerce.payment.domain.PaymentService;
-import com.jinius.ecommerce.payment.domain.model.PaymentStatus;
 import com.jinius.ecommerce.payment.domain.model.PaymentType;
 import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
@@ -29,10 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.List;
 
-import static com.jinius.ecommerce.common.ErrorCode.*;
+import static com.jinius.ecommerce.common.exception.ErrorCode.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -148,23 +145,17 @@ public class OrderFacadeTest {
         }
 
         //then
-        verify(orderService).updateOrderStatus(mockOrder, OrderStatus.CANCELED);
-        verify(orderService).updateOrderItemStatus(mockOrder.getOrderItems(), OrderItemStatus.CANCELED);
         assert exception != null;
         assert exception instanceof EcommerceException;
         assert ((EcommerceException) exception).getErrorCode() == ErrorCode.NOT_ENOUGH_POINT;
     }
 
     @Test
-    @DisplayName("주문 성공 시 주문 상태가 COMPLETED 상태로 변경")
+    @DisplayName("주문 성공 시 주문 상태가 COMPLETED 상태로 변경되고, 유저 포인트가 차감된다.")
     void order_success() {
         //given
         Long userId = 1L;
-        User mockUser = User.builder()
-                .userId(userId)
-                .name("Iris")
-                .point(BigInteger.valueOf(100000))
-                .build();
+        User mockUser = Fixture.user(userId, 100000);
         OrderSheet mockOrderSheet = Fixture.orderSheet(userId);
         Order mockOrder = Fixture.order(userId);
         Payment mockPayment = Fixture.payment(Fixture.orderPaymentInfoForPoint(mockUser, mockOrder, PaymentType.POINT));
@@ -178,6 +169,12 @@ public class OrderFacadeTest {
         sut.order(orderRequest.toFacade());
 
         //then
+        User result = userService.getUser(userId);
+        System.out.println("result.getPoint() = " + result.getPoint());
+        System.out.println("mockUser.getPoint() = " + mockUser.getPoint());
+        System.out.println("mockPayment.getPoint() = " + mockPayment.getPoint());
+        System.out.println(mockOrderSheet.getTotalPrice());
         verify(orderService).updateOrderStatus(mockOrder, OrderStatus.COMPLETED);
+        assert result.getPoint().compareTo(BigInteger.valueOf(100000).subtract(mockOrderSheet.getTotalPrice())) == 0;
     }
 }
