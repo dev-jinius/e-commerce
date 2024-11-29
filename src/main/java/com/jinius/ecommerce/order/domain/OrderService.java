@@ -1,7 +1,7 @@
 package com.jinius.ecommerce.order.domain;
 
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.order.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,12 +61,11 @@ public class OrderService {
      * @return
      */
     @Transactional
-    public Order createOrderItems(Order order) {
+    public void createOrderItems(Order order) {
         List<OrderItem> orderItems = orderItemRepository.create(order);
+
         if (orderItems.size() != order.getOrderItems().size())
             throw new EcommerceException(ErrorCode.FAIL_CREATE_ORDER_ITEMS);
-
-        return order;
     }
 
     /**
@@ -97,9 +97,9 @@ public class OrderService {
     }
 
     /**
-     * 10초마다 주문 완료된 주문 상품 배송 처리
+     * 60초마다 주문 완료된 주문 상품 배송 처리
      */
-    @Scheduled(fixedRate = 10000) 
+    @Scheduled(fixedRate = 60000)
     public void updateOrderItemStatusToDELIVERED() {
         List<Long> preparingItems = orderItemRepository.findPreparingItems();
         if (preparingItems.size() == 0) return;

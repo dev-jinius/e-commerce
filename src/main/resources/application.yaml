@@ -4,6 +4,11 @@ spring:
     group:
       "dev": "dev"
       "prod": "prod"
+  data:
+    redis:
+      host: ${REDIS_SERVER_IP}
+      port: ${REDIS_SERVER_PORT}
+      password: ${REDIS_SERVER_PASSWORD}
 
 # Swagger
 springdoc:
@@ -22,7 +27,6 @@ springdoc:
 
 server:
   port: 8080
-
 ---
 spring:
   config:

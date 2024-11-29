@@ -1,7 +1,7 @@
 package com.jinius.ecommerce.product.domain;
 
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.product.domain.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

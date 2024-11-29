@@ -44,7 +44,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void updateStock(Stock stock) {
-        productJPARepository.updateStock(stock.getProductId(), stock.getQuantity());
+    public int updateStock(Stock stock) {
+        return productJPARepository.updateStock(stock.getProductId(), stock.getQuantity());
     }
 }

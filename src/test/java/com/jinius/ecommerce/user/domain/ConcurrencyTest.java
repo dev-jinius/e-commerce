@@ -151,4 +151,41 @@ public class ConcurrencyTest {
         assert successCount == 1;
         assertThat(result.getPoint()).isEqualTo(requestUser.getPoint().add(chargePoint));
     }
+
+    @Test
+    @DirtiesContext // 스프링 컨텍스트 공유 방지
+    @DisplayName("동일한 사용자의 포인트를 사용하려는 3개의 독립적인 트랜잭션이 동시에 실행되는 경우, 선점된 1개 트랜잭션 외의 요청은 OptimisticLockingFailureException 예외를 던지며 충전에 실패한다.")
+    public void usePoint_concurrency_OptimisticLockingFailureException() {
+        //given
+        Long userId = 1L;
+        BigInteger usePoint = BigInteger.valueOf(100);
+        User requestUser = Fixture.user(userId, 100);
+
+        //비동기 작업 생성 (독립된 CompletableFuture, User 객체 사용, runAsync()로 실행 순서 관계 없이 비동기 작업 실행)
+        CompletableFuture<Void> future1 = CompletableFuture.runAsync(
+                () -> userPointService.usePoint(Fixture.user(userId, requestUser.getPoint().intValue()), usePoint));
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(
+                () -> userPointService.usePoint(Fixture.user(userId, requestUser.getPoint().intValue()), usePoint));
+        CompletableFuture<Void> future3 = CompletableFuture.runAsync(
+                () -> userPointService.usePoint(Fixture.user(userId, requestUser.getPoint().intValue()), usePoint));
+
+        List<CompletableFuture<Void>> futures = List.of(future1, future2, future3); //비동기 작업 목록
+
+        Throwable exception = null;
+        try {
+            futures.forEach(CompletableFuture::join);
+        } catch (CompletionException e) {   //CompletableFuture 의 비동기 작업 처리(join(), get())할 때 발생한 예외는 통합적으로 CompletionException로 감싼다.
+            exception = e.getCause();       //실제 로직에서 발생한 예외를 가져오는 코드.
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        //then
+        User result = userService.getUser(userId);
+        System.out.println("result.getPoint() = " + result.getPoint());
+
+        assert exception != null;
+        assert exception instanceof OptimisticLockingFailureException;
+        assertThat(result.getPoint()).isEqualTo(requestUser.getPoint().subtract(usePoint));
+    }
 }
