@@ -40,7 +40,7 @@ public class StockService {
 
         for (OrderItem item : orderItems) {
             try {
-                rLockHandler.callWithLock(LOCK_KEY_PREFIX + "_" + item.getProductId(), () -> {
+                rLockHandler.callWithLock(LOCK_KEY_PREFIX + item.getProductId(), () -> {
                     //재고 조회
                     Stock stock = productRepository.findStockById(item.getProductId()).orElseThrow(() -> new EcommerceException(ErrorCode.NOT_FOUND_PRODUCT));
                     //재고 차감
