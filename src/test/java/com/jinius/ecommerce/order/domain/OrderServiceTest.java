@@ -1,8 +1,8 @@
 package com.jinius.ecommerce.order.domain;
 
 import com.jinius.ecommerce.Fixture;
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.order.domain.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

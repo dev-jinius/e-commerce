@@ -14,30 +14,17 @@ public class User {
     private Long userId;
     private String name;
     private BigInteger point;
+    private int version;          //동시성 제어(낙관적 락)을 위한 버전 추가
 
-    /**
-     * 포인트 충전
-     * @param point
-     * @return
-     */
-    public User addPoint(BigInteger point) {
-        return User.builder()
-                .userId(this.userId)
-                .name(this.name)
-                .point(this.point.add(point))
-                .build();
+    //포인트 충전
+    public void addPoint(BigInteger point) {
+        this.point = this.point.add(point);
+        this.version++;
     }
 
-    /**
-     * 포인트 차감
-     * @param point
-     * @return
-     */
-    public User subtractPoint(BigInteger point) {
-        return User.builder()
-                .userId(this.userId)
-                .name(this.name)
-                .point(this.point.subtract(point))
-                .build();
+    //포인트 차감
+    public void subtractPoint(BigInteger point) {
+        this.point = this.point.subtract(point);
+        this.version++;
     }
 }

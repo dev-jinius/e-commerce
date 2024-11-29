@@ -1,7 +1,7 @@
 package com.jinius.ecommerce.payment.domain.model;
 
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import lombok.*;
 
 import java.math.BigInteger;

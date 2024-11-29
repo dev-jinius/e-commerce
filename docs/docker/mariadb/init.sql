@@ -1,6 +1,6 @@
-# CREATE DATABASE `jinius`;
-# GRANT ALL PRIVILEGES ON `jinius`.* TO 'jinius'@'localhost' IDENTIFIED BY 'jinius';
-# FLUSH PRIVILEGES;
+CREATE DATABASE `jinius`;
+GRANT ALL PRIVILEGES ON `jinius`.* TO 'jinius'@'localhost' IDENTIFIED BY 'jinius';
+FLUSH PRIVILEGES;
 
 USE `jinius`;
 
@@ -9,6 +9,7 @@ CREATE TABLE `tb_user` (
    `user_id`    INT NOT NULL AUTO_INCREMENT  COMMENT '유저 ID',
    `user_name`  VARCHAR(20) NOT NULL COMMENT '유저 이름',
    `point`      BIGINT(20) NOT NULL COMMENT '포인트',
+   `version`    INT NOT NULL COMMENT '버전',
    PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -66,12 +67,3 @@ CREATE TABLE `tb_payment` (
     KEY `idx_create_date` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `tb_cart`;
-CREATE TABLE `tb_cart` (
-   `cart_id`        INT NOT NULL AUTO_INCREMENT COMMENT '장바구니 ID',
-   `user_id`        INT DEFAULT NULL COMMENT '유저 ID',
-   `item_id`        INT DEFAULT NULL COMMENT '상품 ID',
-   `quantity`       INT DEFAULT NULL COMMENT '상품 수량',
-   `create_at`      DATETIME DEFAULT CURRENT_TIMESTAMP not null COMMENT '장바구니 생성 일시',
-   PRIMARY KEY (`cart_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

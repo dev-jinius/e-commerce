@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.common;
+package com.jinius.ecommerce.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+
+    /**
+     * 락 예외
+     */
+    FAILED_LOCK(HttpStatus.BAD_REQUEST.value(), "ERR-LOCK", "요청이 많아 처리에 실패했습니다. 다시 시도해주세요."),
+    FAILED_ACQUIRE_RLOCK_TIME_OUT(HttpStatus.BAD_REQUEST.value(),"ERR-R01", "시간 초과로 락 획득에 실패했습니다."),
 
     /**
      * Path 파라미터 Validation 예외

@@ -1,8 +1,10 @@
 package com.jinius.ecommerce.product.domain;
 
 import com.jinius.ecommerce.Fixture;
-import com.jinius.ecommerce.common.EcommerceException;
-import com.jinius.ecommerce.common.ErrorCode;
+import com.jinius.ecommerce.common.RLockHandler;
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
+import com.jinius.ecommerce.common.exception.LockException;
 import com.jinius.ecommerce.order.domain.model.OrderItem;
 import com.jinius.ecommerce.product.domain.model.Stock;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StockServiceTest {
@@ -25,19 +29,30 @@ class StockServiceTest {
     StockService sut;
 
     @Mock
+    RLockHandler lockHandler;
+
+    @Mock
     ProductRepository productRepository;
 
     @Test
-    @DisplayName("재고 차감 요청 시 orderItems 파라미터 개수가 0인 경우 INVALID_PARAMETER 예외 발생")
+    @DisplayName("재고 차감 요청 시 orderItems이 NULL인 경우 INVALID_PARAMETER 예외 발생")
     void decreaseStock_invalidOrderItems_failed() {
         //given
         List<OrderItem> orderItems = null;
 
         //when
         Throwable exception = null;
+//        doAnswer(invocation -> {
+//            Runnable runnable = invocation.getArgument(1);
+//            runnable.run();
+//            return null;
+//        }).when(lockHandler).callWithLock(
+//                any(String.class), any(Runnable.class), any(Long.class), any(Long.class), any(TimeUnit.class)
+//        );
+
         try {
             sut.decreaseStock(orderItems);
-        } catch (EcommerceException e) {
+        } catch (EcommerceException | LockException e) {
             exception = e;
         }
 
@@ -55,10 +70,18 @@ class StockServiceTest {
 
         //when
         when(productRepository.findStockById(any(Long.class))).thenReturn(Optional.empty());
+        doAnswer(invocation -> {
+            Runnable runnable = invocation.getArgument(1);
+            runnable.run();
+            return null;
+        }).when(lockHandler).callWithLock(
+                any(String.class), any(Runnable.class), any(Long.class), any(Long.class), any(TimeUnit.class)
+        );
+
         Throwable exception = null;
         try {
             sut.decreaseStock(orderItems);
-        } catch (EcommerceException e) {
+        } catch (EcommerceException | LockException e) {
             exception = e;
         }
 
@@ -76,10 +99,18 @@ class StockServiceTest {
 
         //when
         when(productRepository.findStockById(any(Long.class))).thenReturn(Optional.of(Fixture.stockOne()));
+        doAnswer(invocation -> {
+            Runnable runnable = invocation.getArgument(1);
+            runnable.run();
+            return null;
+        }).when(lockHandler).callWithLock(
+                any(String.class), any(Runnable.class), any(Long.class), any(Long.class), any(TimeUnit.class)
+        );
+
         Throwable exception = null;
         try {
             sut.decreaseStock(orderItems);
-        } catch (EcommerceException e) {
+        } catch (EcommerceException | LockException e) {
             exception = e;
         }
 
@@ -97,14 +128,24 @@ class StockServiceTest {
 
         //when
         when(productRepository.findStockById(any(Long.class))).thenReturn(Optional.of(dbStock));
+        doAnswer(invocation -> {
+            Runnable runnable = invocation.getArgument(1);
+            runnable.run();
+            return null;
+        }).when(lockHandler).callWithLock(
+                any(String.class), any(Runnable.class), any(Long.class), any(Long.class), any(TimeUnit.class)
+        );
+
         Throwable exception = null;
         try {
             sut.decreaseStock(orderItems);
-        } catch (EcommerceException e) {
+        } catch (EcommerceException | LockException e) {
             exception = e;
         }
 
         //then
         assert exception == null;
+        // 재고 저장 로직 호출 확인
+        verify(productRepository).updateStock(dbStock);
     }
 }

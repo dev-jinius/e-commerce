@@ -1,6 +1,5 @@
 package com.jinius.ecommerce.user.application.dto;
 
-import com.jinius.ecommerce.user.domain.model.Charge;
 import com.jinius.ecommerce.user.domain.model.User;
 import lombok.*;
 
@@ -14,13 +13,6 @@ public class UserPointDto {
     private Long userId;
     private String userName;
     private BigInteger point;
-
-    public Charge toCharge(BigInteger point) {
-        return Charge.builder()
-                .user(toUser())
-                .chargePoint(point)
-                .build();
-    }
 
     public static UserPointDto from(User user) {
         return UserPointDto.builder()

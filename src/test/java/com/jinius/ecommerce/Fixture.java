@@ -19,7 +19,8 @@ public class Fixture {
 
     private static ArbitraryBuilder<User> fixUserName() {
         return fixtureMonkey.giveMeBuilder(User.class)
-                .set("name", "이리스");
+                .set("name", "이리스")
+                .set("version", 1);
     }
     private static ArbitraryBuilder<Payment> fixPointPayment() {
         return fixtureMonkey.giveMeBuilder(Payment.class)

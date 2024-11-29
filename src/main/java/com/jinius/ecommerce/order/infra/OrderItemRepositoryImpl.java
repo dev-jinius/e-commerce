@@ -8,6 +8,7 @@ import com.jinius.ecommerce.order.infra.entity.OrderItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,11 +22,16 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
 
     @Override
     public List<OrderItem> create(Order order) {
+
         List<OrderItemEntity> entities = order.getOrderItems().stream()
+                .sorted(Comparator.comparing(OrderItem::getProductId))
                 .map((OrderItem oi) -> OrderItemEntity.from(order.getOrderId(), oi, PREPARING))
                 .collect(Collectors.toList());
 
-        return orderItemJpaRepository.saveAllAndFlush(entities).stream().map(OrderItemEntity::toOrderItem).toList();
+        return orderItemJpaRepository.saveAllAndFlush(entities).stream()
+                .map(OrderItemEntity::toOrderItem)
+                .sorted(Comparator.comparing(OrderItem::getProductId))
+                .collect(Collectors.toList());
     }
 
     @Override
