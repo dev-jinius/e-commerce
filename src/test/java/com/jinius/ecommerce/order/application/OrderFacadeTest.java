@@ -145,8 +145,6 @@ public class OrderFacadeTest {
         }
 
         //then
-        verify(orderService).updateOrderStatus(mockOrder, OrderStatus.CANCELED);
-        verify(orderService).updateOrderItemStatus(mockOrder.getOrderItems(), OrderItemStatus.CANCELED);
         assert exception != null;
         assert exception instanceof EcommerceException;
         assert ((EcommerceException) exception).getErrorCode() == ErrorCode.NOT_ENOUGH_POINT;

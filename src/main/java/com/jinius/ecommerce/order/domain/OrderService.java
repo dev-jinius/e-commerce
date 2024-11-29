@@ -51,6 +51,7 @@ public class OrderService {
         Order order = orderRepository.create(orderSheet);
         if (order == null) throw new EcommerceException(ErrorCode.FAIL_CREATE_ORDER);
 
+        //OrderItems 동시 재고 차감 요청 시 데드락 방지를 위해 productId 순으로 정렬
         createOrderItems(order);
         return order;
     }

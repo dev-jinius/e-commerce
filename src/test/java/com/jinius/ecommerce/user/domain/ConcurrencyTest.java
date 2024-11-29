@@ -1,6 +1,7 @@
 package com.jinius.ecommerce.user.domain;
 
 import com.jinius.ecommerce.Fixture;
+import com.jinius.ecommerce.common.exception.LockException;
 import com.jinius.ecommerce.user.domain.model.UpdateUser;
 import com.jinius.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +72,7 @@ public class ConcurrencyTest {
         System.out.println("result.getPoint() = " + result.getPoint());
 
         assert exception != null;
-        assert exception instanceof OptimisticLockingFailureException;
+        assert exception instanceof LockException;
         assertThat(result.getPoint()).isEqualTo(requestUser.getPoint().add(chargePoint));
     }
 
@@ -99,7 +101,7 @@ public class ConcurrencyTest {
                         future.join();
                         return true;
                     } catch (CompletionException e) {
-                        if (e.getCause() instanceof OptimisticLockingFailureException) {
+                        if (e.getCause() instanceof LockException) {
                             return false;
                         }
                         throw e;
@@ -137,7 +139,7 @@ public class ConcurrencyTest {
                         future.join();
                         return true;
                     } catch (CompletionException e) {
-                        if (e.getCause() instanceof OptimisticLockingFailureException) {
+                        if (e.getCause() instanceof LockException) {
                             return false;
                         }
                         throw e;
@@ -185,7 +187,7 @@ public class ConcurrencyTest {
         System.out.println("result.getPoint() = " + result.getPoint());
 
         assert exception != null;
-        assert exception instanceof OptimisticLockingFailureException;
+        assert exception instanceof LockException;
         assertThat(result.getPoint()).isEqualTo(requestUser.getPoint().subtract(usePoint));
     }
 }
