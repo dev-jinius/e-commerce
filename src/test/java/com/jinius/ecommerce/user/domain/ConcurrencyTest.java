@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.repository.query.Param;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -17,6 +18,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.IntStream;
 
@@ -38,7 +41,7 @@ public class ConcurrencyTest {
 
     @Test
     @DirtiesContext // 스프링 컨텍스트 공유 방지
-    @DisplayName("동일한 사용자의 포인트를 충전하려는 3개의 독립적인 트랜잭션이 동시에 실행되는 경우, 선점된 1개 트랜잭션 외의 요청은 OptimisticLockingFailureException 예외를 던지며 충전에 실패한다.")
+    @DisplayName("동일한 사용자의 포인트를 충전하려는 3개의 독립적인 트랜잭션이 동시에 실행되는 경우, 선점된 1개 트랜잭션 외의 요청은 LockException 예외를 던지며 충전에 실패한다.")
     public void chargePoint_concurrency_OptimisticLockingFailureException() {
         //given
         Long userId = 1L;
@@ -126,10 +129,11 @@ public class ConcurrencyTest {
         Long userId = 1L;
         BigInteger chargePoint = BigInteger.valueOf(50000);
         User requestUser = Fixture.user(userId, 50000);
+        ExecutorService executor = Executors.newFixedThreadPool(20);
 
         //비동기 작업 목록 (독립적인 CompletableFuture 객체와 User 객체 사용, runAysnc()로 실행 순서 관계 없이 비동기 작업 실행)
         List<CompletableFuture<Void>> futures = IntStream.range(0, 1000)
-                .mapToObj(i -> CompletableFuture.runAsync(() -> userPointService.chargePoint(Fixture.user(userId, requestUser.getPoint().intValue()), chargePoint)))
+                .mapToObj(i -> CompletableFuture.runAsync(() -> userPointService.chargePoint(Fixture.user(userId, requestUser.getPoint().intValue()), chargePoint), executor))
                 .toList();
 
         //충전 성공 횟수 카운팅
@@ -143,6 +147,8 @@ public class ConcurrencyTest {
                             return false;
                         }
                         throw e;
+                    } finally {
+                        executor.shutdown();
                     }
                 })
                 .count();
@@ -156,8 +162,8 @@ public class ConcurrencyTest {
 
     @Test
     @DirtiesContext // 스프링 컨텍스트 공유 방지
-    @DisplayName("동일한 사용자의 포인트를 사용하려는 3개의 독립적인 트랜잭션이 동시에 실행되는 경우, 선점된 1개 트랜잭션 외의 요청은 OptimisticLockingFailureException 예외를 던지며 충전에 실패한다.")
-    public void usePoint_concurrency_OptimisticLockingFailureException() {
+    @DisplayName("동일한 사용자의 포인트를 사용하려는 3개의 독립적인 트랜잭션이 동시에 실행되는 경우, 선점된 1개 트랜잭션 외의 요청은 LockException 예외를 던지며 충전에 실패한다.")
+    public void usePoint_concurrency_LockException() {
         //given
         Long userId = 1L;
         BigInteger usePoint = BigInteger.valueOf(100);
