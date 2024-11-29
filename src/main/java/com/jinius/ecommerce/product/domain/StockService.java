@@ -33,7 +33,7 @@ public class StockService {
      */
     @Transactional
     public void decreaseStock(List<OrderItem> orderItems) {
-        if (orderItems.isEmpty())
+        if (orderItems == null ||  orderItems.size() <= 0)
             throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
 
         for (OrderItem item : orderItems) {

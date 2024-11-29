@@ -7,6 +7,7 @@ import com.jinius.ecommerce.user.domain.UserService;
 import com.jinius.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,7 +64,7 @@ public class UserPointConcurrencyTest {
 
         assert exception != null;
         assert exception instanceof LockException;
-        assert ((LockException) exception).getErrorCode() == ErrorCode.OPTIMISTIC_LOCK;
+        assert ((LockException) exception).getErrorCode() == ErrorCode.FAILED_LOCK;
         assertThat(result.getPoint()).isEqualTo(requestUser.getPoint().add(chargePoint));
     }
 
