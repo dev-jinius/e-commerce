@@ -42,40 +42,21 @@ public class OrderFacade {
         User user = userService.getUser(request.getUserId());
         //주문서 생성
         OrderSheet orderSheet = orderService.createOrderSheet(request.toOrderSheet());
-        //주문 및 주문 상품 생성 //OrderItems 동시 재고 차감 시 데드락 방지를 위해 productId 순으로 정렬
+        //주문 및 주문 상품 생성
         Order order = orderService.createOrder(orderSheet);
 
         //결제 정보 생성
         Payment payment = paymentService.createPayment(request.toOrderPayment(user, order, PaymentType.POINT));
+
         //결제 처리
         userPointService.usePoint(user, orderSheet.getTotalPrice());
         paymentService.updateStatus(payment, PaymentStatus.PAID);
         orderService.updateOrderStatus(order, PAID);
+
         //재고 처리 + 분산락 적용
         stockService.decreaseStock(order.getOrderItems());
         orderService.updateOrderStatus(order, COMPLETED);
 
         return OrderDto.from(order);
-
-//        try {
-//            //결제 정보 생성
-//            Payment payment = paymentService.createPayment(request.toOrderPayment(user, order, PaymentType.POINT));
-//            //결제 처리
-//            userPointService.usePoint(user, orderSheet.getTotalPrice());
-//            paymentService.updateStatus(payment, PaymentStatus.PAID);
-//            orderService.updateOrderStatus(order, PAID);
-//            //재고 처리 + 분산락 적용
-//            stockService.decreaseStock(order.getOrderItems());
-//            orderService.updateOrderStatus(order, COMPLETED);
-//            return OrderDto.from(order);
-//        } catch (EcommerceException | LockeException e) {
-//            // 주문 취소 상태 업데이트
-//            orderService.updateOrderStatus(order, CANCELED);
-//            orderService.updateOrderItemStatus(order.getOrderItems(), OrderItemStatus.CANCELED);
-//            return OrderDto.from(order);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//            throw e;
-//        }
     }
 }
