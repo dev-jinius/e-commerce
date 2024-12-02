@@ -9,11 +9,11 @@ import com.jinius.ecommerce.order.domain.model.OrderItem;
 import com.jinius.ecommerce.product.domain.model.Stock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +27,7 @@ public class StockService {
     private static final String LOCK_KEY_PREFIX = "Stock_";
     private final RLockHandler rLockHandler;
 
+    private final ProductService productService;
     private final ProductRepository productRepository;
 
     /**
@@ -53,5 +54,7 @@ public class StockService {
                 throw new LockException(ErrorCode.FAILED_LOCK);
             }
         }
+        // 모든 상품에 대한 재고 차감이 완료된 후 캐시 갱신
+        productService.updateCacheAfterDecreaseStock(orderItems);
     }
 }
