@@ -1,5 +1,4 @@
 spring:
-  application.name: ecommerce
   config:
     activate:
       on-profile: "stage"
