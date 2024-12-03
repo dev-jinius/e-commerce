@@ -1,3 +1,4 @@
+USE jinius;
 INSERT INTO tb_user(USER_NAME, POINT, VERSION) VALUES ( '관리자', 10000, 1 );
 INSERT INTO tb_user(USER_NAME, POINT, VERSION) VALUES ( '관리자', 20000, 1 );
 
