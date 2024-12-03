@@ -19,15 +19,18 @@ import java.time.Duration;
 @EnableCaching      // 캐싱 활성화
 public class RedisCacheConfig {
 
+    /*
+     * Redis Cache Config 설정
+     */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10))       // 캐시 TTL 10분 설정
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())) // 키 문자열 직렬화
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // 값 JSON 직렬화
                 .disableCachingNullValues();            // NULL 값 캐싱 비활성화
 
         return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(redisCacheConfiguration).build();    // 기본 캐시 설정
+                .cacheDefaults(redisCacheConfiguration).build();
     }
 }
