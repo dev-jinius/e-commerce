@@ -1,8 +1,6 @@
-CREATE DATABASE `test`;
-GRANT ALL PRIVILEGES ON `test`.* TO 'test'@'localhost' IDENTIFIED BY 'test';
-FLUSH PRIVILEGES;
+CREATE DATABASE `jinius`;
 
-USE `test`;
+USE `jinius`;
 
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user` (

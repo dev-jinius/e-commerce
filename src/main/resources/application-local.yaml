@@ -4,9 +4,9 @@ server:
 spring:
   config:
     activate:
-      on-profile: "dev"
+      on-profile: "local"
 
-  #MariaDB
+  # H2
   datasource:
     url: 'jdbc:h2:mem:ecommerce;MODE=MySQL'
     driver-class-name: org.h2.Driver
@@ -37,7 +37,7 @@ spring:
       mode: always
       platform: h2
 
-  #redis
+  # Redis
   data:
     redis:
       host: ${REDIS_SERVER_IP}

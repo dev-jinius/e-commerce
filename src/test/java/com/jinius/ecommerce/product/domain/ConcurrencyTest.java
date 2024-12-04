@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -21,6 +22,7 @@ import java.util.stream.IntStream;
  * 재고 처리 동시성 제어
  * (비동기 요청 처리 테스트)
  */
+@Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc

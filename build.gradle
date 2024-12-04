@@ -49,12 +49,15 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.testcontainers:testcontainers:1.20.4' // TC 의존성
+	testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+	testImplementation 'org.testcontainers:junit-jupiter:1.20.4'  // TC 의존성
+	testImplementation 'org.testcontainers:jdbc:1.20.4'           // DB와의 JDBC connection
+	testImplementation "org.testcontainers:mariadb:1.20.4"
+//	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+//	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+//	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testImplementation 'com.navercorp.fixturemonkey:fixture-monkey-starter:1.1.0'
-	testImplementation 'org.testcontainers:mariadb'
 }
 
 tasks.named('test') {

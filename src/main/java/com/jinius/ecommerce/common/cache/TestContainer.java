@@ -1,18 +1,16 @@
-package com.jinius.ecommerce;
+package com.jinius.ecommerce.common.cache;
 
-import org.testcontainers.containers.MariaDBContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
-public abstract class TestContainer extends TestRedisContainer {
+//@Testcontainers
+public abstract class TestContainer {
 
-    private static final String MARIA_DB = "mariadb:10.6.18";
-
-    static final MariaDBContainer MARIADB_CONTAINER = new MariaDBContainer<>(MARIA_DB)
-            .withUsername("test")
-            .withPassword("test")
-            .withDatabaseName("jinius")
-            .withInitScript("init.sql");
-
-            ;
+//    private static final String MARIA_DB = "mariadb:10.6.18";
+//
+//    static final MariaDBContainer MARIADB_CONTAINER = new MariaDBContainer<>(MARIA_DB)
+//            .withUsername("test")
+//            .withPassword("test")
+//            .withDatabaseName("jinius")
+//            .withInitScript("init.sql");
+//
+//            ;
 }
