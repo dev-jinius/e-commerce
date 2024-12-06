@@ -56,6 +56,7 @@ public class OrderFacade {
 
         //재고 처리 + 분산락 적용
         stockService.decreaseStock(order.getOrderItems());
+
         orderService.updateOrderStatus(order, COMPLETED);
 
         return OrderDto.from(order);

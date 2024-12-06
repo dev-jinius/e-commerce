@@ -98,12 +98,12 @@ public class OrderService {
     }
 
     /**
-     * 60초마다 주문 완료된 주문 상품 배송 처리
+     * 5분마다 주문 완료된 주문 상품 배송 처리
      */
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 300000)
     public void updateOrderItemStatusToDELIVERED() {
         List<Long> preparingItems = orderItemRepository.findPreparingItems();
-        if (preparingItems.size() == 0) return;
+        if (preparingItems.isEmpty()) return;
 
         orderItemRepository.updateStatus(preparingItems, DELIVERED);
     }

@@ -142,6 +142,10 @@ public class Fixture {
      * @return
      */
 
+    public static Product product() {
+        return new Product(1L, "청바지", BigInteger.valueOf(49900), 50L);
+    }
+
     public static Stock stockOne() {
         return new Stock(1L, 50L);
     }
