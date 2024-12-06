@@ -16,7 +16,7 @@ public interface ProductJPARepository extends JpaRepository<ProductEntity, Long>
 
     List<ProductEntity> findStocksByIdIn(List<Long> itemIds);
 
-    @Query("SELECT p.id AS productId, p.name AS productName, p.price AS productPrice, p.quantity AS stockQuantity " +
+    @Query("SELECT p " +
         "FROM ProductEntity p " +
         "JOIN OrderItemEntity oi ON p.id = oi.productId " +
         "JOIN OrderEntity o ON o.id = oi.orderId " +

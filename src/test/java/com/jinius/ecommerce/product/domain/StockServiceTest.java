@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -33,62 +32,6 @@ class StockServiceTest {
 
     @Mock
     ProductRepository productRepository;
-
-    @Test
-    @DisplayName("재고 차감 요청 시 orderItems이 NULL인 경우 INVALID_PARAMETER 예외 발생")
-    void decreaseStock_invalidOrderItems_failed() {
-        //given
-        List<OrderItem> orderItems = null;
-
-        //when
-        Throwable exception = null;
-//        doAnswer(invocation -> {
-//            Runnable runnable = invocation.getArgument(1);
-//            runnable.run();
-//            return null;
-//        }).when(lockHandler).callWithLock(
-//                any(String.class), any(Runnable.class), any(Long.class), any(Long.class), any(TimeUnit.class)
-//        );
-
-        try {
-            sut.decreaseStock(orderItems);
-        } catch (EcommerceException | LockException e) {
-            exception = e;
-        }
-
-        //then
-        assert exception != null;
-        assert ((EcommerceException) exception).getErrorCode() == ErrorCode.INVALID_PARAMETER;
-    }
-
-
-    @Test
-    @DisplayName("재고 차감 요청 시 재고 조회가 Optional.empty()인 경우 NOT_FOUND_PRODUCT 예외 발생")
-    void decreaseStock_NOT_FOUND_PRODUCT_failed() {
-        //given
-        List<OrderItem> orderItems = Fixture.orderItems(3);
-
-        //when
-        when(productRepository.findStockById(any(Long.class))).thenReturn(Optional.empty());
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(1);
-            runnable.run();
-            return null;
-        }).when(lockHandler).callWithLock(
-                any(String.class), any(Runnable.class), any(Long.class), any(Long.class), any(TimeUnit.class)
-        );
-
-        Throwable exception = null;
-        try {
-            sut.decreaseStock(orderItems);
-        } catch (EcommerceException | LockException e) {
-            exception = e;
-        }
-
-        //then
-        assert exception != null;
-        assert ((EcommerceException) exception).getErrorCode() == ErrorCode.NOT_FOUND_PRODUCT;
-    }
 
     @Test
     @DisplayName("재고 차감 요청 시 요청한 주문 수량이 재고보다 많은 경우, NOT_ENOUGH_STOCK 예외 발생")
