@@ -35,9 +35,6 @@ public class StockService {
      */
     @Transactional(rollbackFor = {EcommerceException.class, LockException.class})
     public void decreaseStock(List<OrderItem> orderItems) {
-        if (orderItems == null ||  orderItems.size() <= 0)
-            throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
-
         for (OrderItem item : orderItems) {
             try {
                 rLockHandler.callWithLock(LOCK_KEY_PREFIX + item.getProductId(), () -> {
