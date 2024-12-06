@@ -3,6 +3,7 @@ package com.jinius.ecommerce.order.domain;
 import com.jinius.ecommerce.Fixture;
 import com.jinius.ecommerce.common.exception.EcommerceException;
 import com.jinius.ecommerce.common.exception.ErrorCode;
+import com.jinius.ecommerce.common.exception.LockException;
 import com.jinius.ecommerce.order.domain.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.jinius.ecommerce.order.domain.model.OrderStatus.*;
 import static org.mockito.ArgumentMatchers.any;

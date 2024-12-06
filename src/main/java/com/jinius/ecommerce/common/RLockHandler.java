@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.RedisException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,8 +87,11 @@ public class RLockHandler {
             // 락 획득 실패
             throw new InterruptedException();
         } catch (InterruptedException e) {
-            log.info("get lock failed. key={}", key);
+            log.error("get lock failed. key={}", key);
             throw new LockException(ErrorCode.FAILED_ACQUIRE_RLOCK_TIME_OUT);
+        } catch (RedisException e) {
+            log.error("Redis exception occurred while acquiring lock for key={}", key, e);
+            throw new LockException(ErrorCode.FAILED_ACQUIRE_RLOCK_REDIS_ERROR);
         } finally {
             //RLock 해제 이벤트 발행 => 트랜잭션 완료(커밋, 롤백) 후에 락 해제하도록 AFTER_COMPLETION 설정.
             //트랜잭션 완료 이후 락 해제 => 데이터의 정합성을 위함.

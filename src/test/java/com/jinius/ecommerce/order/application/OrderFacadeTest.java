@@ -1,6 +1,7 @@
 package com.jinius.ecommerce.order.application;
 
 import com.jinius.ecommerce.Fixture;
+import com.jinius.ecommerce.IntegrationTestSupport;
 import com.jinius.ecommerce.common.exception.EcommerceException;
 import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.order.api.dto.OrderItemRequest;
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-public class OrderFacadeTest {
+public class OrderFacadeTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderFacade sut;

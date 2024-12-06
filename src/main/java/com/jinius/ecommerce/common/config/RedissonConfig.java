@@ -30,8 +30,13 @@ public class RedissonConfig {
     public RedissonClient redissonClient() {
         RedissonClient redisson = null;
         Config config = new Config();
-        config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort).setPassword(password);
+        config.useSingleServer()
+                .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort)
+                .setPassword(password)
+                .setRetryAttempts(5)
+                .setRetryInterval(3000);
         config.setLockWatchdogTimeout(30_000);
+
         redisson = Redisson.create(config);
         return redisson;
     }

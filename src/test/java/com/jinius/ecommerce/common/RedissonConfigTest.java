@@ -1,6 +1,6 @@
 package com.jinius.ecommerce.common;
 
-import com.jinius.ecommerce.RedisTestContainer;
+import com.jinius.ecommerce.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RMap;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class RedissonConfigTest extends RedisTestContainer {
+class RedissonConfigTest extends IntegrationTestSupport {
 
     @Autowired
     private RedissonClient redissonClient;

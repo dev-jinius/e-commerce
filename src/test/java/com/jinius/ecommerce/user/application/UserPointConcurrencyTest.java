@@ -5,6 +5,7 @@ import com.jinius.ecommerce.common.exception.LockException;
 import com.jinius.ecommerce.user.application.dto.ChargeDto;
 import com.jinius.ecommerce.user.domain.UserService;
 import com.jinius.ecommerce.user.domain.model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigInteger;
@@ -35,10 +40,29 @@ public class UserPointConcurrencyTest {
     @Autowired
     UserService userService;
 
+    @Container
+    private static final GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:latest")
+            .withExposedPorts(6379)
+            .withEnv("REDIS_PASSWORD", "redis")
+            .withReuse(true)
+            .withCommand("redis-server --requirepass redis");
+
+    @DynamicPropertySource
+    public static void dynamicProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379).toString());
+        registry.add("spring.data.redis.password", () -> "redis");
+    }
+
+    @BeforeEach
+    void setUp() {
+        REDIS_CONTAINER.start();
+    }
+
     @Test
     @DirtiesContext // 스프링 컨텍스트 공유 방지
     @DisplayName("동일한 사용자의 포인트를 충전하려는 3개의 독립적인 트랜잭션이 동시에 실행되는 경우, 선점된 1개 트랜잭션 외의 요청은 LockException 예외를 던지며 충전에 실패한다.")
-    public void chargePoint_concurrency_OLockException() {
+    public void chargePoint_concurrency_LockException() {
         //given
         Long userId = 1L;
         BigInteger chargePoint = BigInteger.valueOf(50000);

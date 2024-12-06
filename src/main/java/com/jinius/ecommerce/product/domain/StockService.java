@@ -9,12 +9,16 @@ import com.jinius.ecommerce.order.domain.model.OrderItem;
 import com.jinius.ecommerce.product.domain.model.Stock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
 /**
  * 재고 서비스
@@ -22,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class StockService {
 
     private static final String LOCK_KEY_PREFIX = "Stock_";
@@ -35,9 +40,6 @@ public class StockService {
      */
     @Transactional(rollbackFor = {EcommerceException.class, LockException.class})
     public void decreaseStock(List<OrderItem> orderItems) {
-        if (orderItems == null ||  orderItems.size() <= 0)
-            throw new EcommerceException(ErrorCode.INVALID_PARAMETER);
-
         for (OrderItem item : orderItems) {
             try {
                 rLockHandler.callWithLock(LOCK_KEY_PREFIX + item.getProductId(), () -> {

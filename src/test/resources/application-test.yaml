@@ -34,9 +34,9 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: redis
       port: 6379
-      password: redis
+      password: 'redis'
 
 logging:
   level:
@@ -45,4 +45,4 @@ logging:
         orm:
           jdbc:
             bind: trace
-    org.redisson: info
+    org.redisson: debug
