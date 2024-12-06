@@ -3,6 +3,7 @@ package com.jinius.ecommerce.order.application;
 import com.jinius.ecommerce.order.application.dto.OrderDto;
 import com.jinius.ecommerce.order.domain.*;
 import com.jinius.ecommerce.order.domain.model.Order;
+import com.jinius.ecommerce.order.domain.model.OrderItem;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.payment.domain.PaymentService;
 import com.jinius.ecommerce.payment.domain.model.Payment;

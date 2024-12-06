@@ -20,6 +20,8 @@ public class RLockEvent {
      * 락 해제
      */
     void unlock() {
-        lock.unlock();
+        if (lock.isLocked()) {
+            lock.unlock();
+        }
     }
 }

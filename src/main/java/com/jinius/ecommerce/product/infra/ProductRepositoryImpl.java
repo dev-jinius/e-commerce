@@ -1,5 +1,7 @@
 package com.jinius.ecommerce.product.infra;
 
+import com.jinius.ecommerce.common.exception.EcommerceException;
+import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.product.domain.model.Product;
 import com.jinius.ecommerce.product.domain.ProductRepository;
 import com.jinius.ecommerce.product.domain.model.Stock;
