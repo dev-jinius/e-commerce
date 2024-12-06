@@ -31,6 +31,9 @@ class StockServiceTest {
     RLockHandler lockHandler;
 
     @Mock
+    ProductService productService;
+
+    @Mock
     ProductRepository productRepository;
 
     @Test
@@ -71,6 +74,7 @@ class StockServiceTest {
 
         //when
         when(productRepository.findStockById(any(Long.class))).thenReturn(Optional.of(dbStock));
+        when(productService.updateCacheAfterDecreaseStock(orderItems)).thenReturn(List.of(Fixture.product()));
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(1);
             runnable.run();
@@ -88,7 +92,9 @@ class StockServiceTest {
 
         //then
         assert exception == null;
-        // 재고 저장 로직 호출 확인
+        // 재고 저장 로직 호출
         verify(productRepository).updateStock(dbStock);
+        // 재고 캐시 갱신하는 로직 호출
+        verify(productService).updateCacheAfterDecreaseStock(orderItems);
     }
 }

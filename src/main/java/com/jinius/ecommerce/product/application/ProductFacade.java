@@ -38,4 +38,15 @@ public class ProductFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 인기 TOP 5 상품 조회 (노 캐시)
+     *
+     * @return
+     */
+    @Transactional
+    public List<ProductDto> getTop5ProductsNoCache() {
+        return productService.getTop5ProductsNoCache().stream()
+                .map(ProductDto::fromDomain)
+                .collect(Collectors.toList());
+    }
 }

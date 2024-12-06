@@ -44,6 +44,18 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public Optional<Product> findById(Long productId) {
+        return productJPARepository.findById(productId).map(ProductEntity::toProduct);
+    }
+
+    @Override
+    public List<Product> findAllById(List<Long> products) {
+        return productJPARepository.findAllById(products).stream()
+                .map(ProductEntity::toProduct)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public int updateStock(Stock stock) {
         return productJPARepository.updateStock(stock.getProductId(), stock.getQuantity());
     }

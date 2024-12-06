@@ -1,31 +1,38 @@
 package com.jinius.ecommerce.user.application;
 
 import com.jinius.ecommerce.Fixture;
+import com.jinius.ecommerce.IntegrationTestSupport;
 import com.jinius.ecommerce.common.exception.EcommerceException;
 import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.user.application.dto.ChargeDto;
 import com.jinius.ecommerce.user.application.dto.UserPointDto;
 import com.jinius.ecommerce.user.domain.model.User;
 import com.jinius.ecommerce.user.domain.UserService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigInteger;
 
 import static com.jinius.ecommerce.common.exception.ErrorCode.NOT_FOUND_USER;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Transactional
+@Testcontainers
 @ActiveProfiles("test")
-class UserPointFacadeTest {
+class UserPointFacadeTest extends IntegrationTestSupport {
 
     @Autowired
     private UserPointFacade sut;

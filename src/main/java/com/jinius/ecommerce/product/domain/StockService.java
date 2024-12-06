@@ -4,16 +4,16 @@ import com.jinius.ecommerce.common.RLockHandler;
 import com.jinius.ecommerce.common.exception.EcommerceException;
 import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.common.exception.LockException;
-import com.jinius.ecommerce.order.domain.OrderRepository;
 import com.jinius.ecommerce.order.domain.model.OrderItem;
+import com.jinius.ecommerce.product.domain.event.CacheUpdateEvent;
 import com.jinius.ecommerce.product.domain.model.Stock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,12 +22,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class StockService {
 
     private static final String LOCK_KEY_PREFIX = "Stock_";
     private final RLockHandler rLockHandler;
 
     private final ProductRepository productRepository;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 재고 차감 처리 + 분산 락 동시성 제어
@@ -50,5 +53,8 @@ public class StockService {
                 throw new LockException(ErrorCode.FAILED_LOCK);
             }
         }
+
+        // 인기 상품 캐시 갱신 이벤트 처리
+        eventPublisher.publishEvent(new CacheUpdateEvent(this, orderItems));
     }
 }

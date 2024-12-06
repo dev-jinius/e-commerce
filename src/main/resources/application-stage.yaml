@@ -1,0 +1,46 @@
+server:
+  port: ${APP_PORT}
+
+spring:
+  config:
+    activate:
+      on-profile: "stage"
+
+  # MariaDB
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${MARIADB_URL}
+    username: ${MARIADB_USER}
+    password: ${MARIADB_PASSWORD}
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: none        # none, create, create-drop, update, validate
+    defer-datasource-initialization: true
+    open-in-view: false
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+  sql:
+    init:
+      data-locations: classpath:data.sql
+      mode: always
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_SERVER_HOST}
+      port: ${REDIS_SERVER_PORT}
+      password: ${REDIS_SERVER_PASSWORD}
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace

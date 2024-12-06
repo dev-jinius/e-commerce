@@ -2,17 +2,20 @@ package com.jinius.ecommerce.user.domain;
 
 import com.jinius.ecommerce.Fixture;
 import com.jinius.ecommerce.common.exception.LockException;
-import com.jinius.ecommerce.user.domain.model.UpdateUser;
 import com.jinius.ecommerce.user.domain.model.User;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.data.repository.query.Param;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -20,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * 포인트 충전, 사용 동시성 제어 테스트
  */
+@Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -38,6 +41,25 @@ public class ConcurrencyTest {
 
     @Autowired
     UserService userService;
+
+    @Container
+    private static final GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:latest")
+            .withExposedPorts(6379)
+            .withEnv("REDIS_PASSWORD", "redis")
+            .withReuse(true)
+            .withCommand("redis-server --requirepass redis");
+
+    @DynamicPropertySource
+    public static void dynamicProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379).toString());
+        registry.add("spring.data.redis.password", () -> "redis");
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        REDIS_CONTAINER.start();
+    }
 
     @Test
     @DirtiesContext // 스프링 컨텍스트 공유 방지
