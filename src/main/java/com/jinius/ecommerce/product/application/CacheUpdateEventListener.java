@@ -1,4 +1,4 @@
-package com.jinius.ecommerce.product.domain.event;
+package com.jinius.ecommerce.product.application;
 
 import com.jinius.ecommerce.order.domain.model.OrderItem;
 import com.jinius.ecommerce.product.domain.ProductService;

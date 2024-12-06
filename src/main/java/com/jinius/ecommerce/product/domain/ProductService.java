@@ -53,6 +53,24 @@ public class ProductService {
     }
 
     /**
+     * 인기 TOP 5 상품 조회 (no cache)
+     * @return
+     */
+    @Transactional
+    public List<Product> getTop5ProductsNoCache() {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusDays(3);
+        Pageable limit = PageRequest.of(0, 5);
+
+        List<Product> list = productRepository.findTop5ItemsLast3Days(startDate, endDate, limit);
+
+        if (list.isEmpty()) throw new EcommerceException(ErrorCode.NOT_FOUND_PRODUCT);
+        if (list.size() > 5) throw new EcommerceException(ErrorCode.EXCEED_COUNT);
+
+        return list;
+    }
+
+    /**
      * 인기 TOP 5 상품 캐시 갱신
      * @param orderItems
      * @return
