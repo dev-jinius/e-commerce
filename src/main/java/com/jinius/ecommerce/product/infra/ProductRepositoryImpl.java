@@ -1,7 +1,5 @@
 package com.jinius.ecommerce.product.infra;
 
-import com.jinius.ecommerce.common.exception.EcommerceException;
-import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.product.domain.model.Product;
 import com.jinius.ecommerce.product.domain.ProductRepository;
 import com.jinius.ecommerce.product.domain.model.Stock;
@@ -41,6 +39,18 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findAll() {
         return productJPARepository.findAll().stream()
+                .map(ProductEntity::toProduct)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Product> findById(Long productId) {
+        return productJPARepository.findById(productId).map(ProductEntity::toProduct);
+    }
+
+    @Override
+    public List<Product> findAllById(List<Long> products) {
+        return productJPARepository.findAllById(products).stream()
                 .map(ProductEntity::toProduct)
                 .collect(Collectors.toList());
     }

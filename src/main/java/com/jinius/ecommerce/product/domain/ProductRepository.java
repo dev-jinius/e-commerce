@@ -19,4 +19,8 @@ public interface ProductRepository {
     List<Product> findTop5ItemsLast3Days(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
     List<Product> findAll();
+
+    Optional<Product> findById(Long productId);
+
+    List<Product> findAllById(List<Long> products);
 }

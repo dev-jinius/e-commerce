@@ -39,4 +39,12 @@ public class ProductController {
                 productFacade.getTop5Products().stream().map(ProductResponse::from).collect(Collectors.toList())
         );
     }
+    @GetMapping("/top5/noCache")
+    @Operation(summary = "캐시 없이 TOP 5 상품 목록 조회 API", description = "캐시 없이 인기 상품 상위 5개 목록 조회하기")
+    @Schema(description = "캐시 없이 인기 상품 상위 5개 목록 응답")
+    public ResponseEntity<List<ProductResponse>> topProductListNoCache() {
+        return ResponseEntity.ok().body(
+                productFacade.getTop5ProductsNoCache().stream().map(ProductResponse::from).collect(Collectors.toList())
+        );
+    }
 }
