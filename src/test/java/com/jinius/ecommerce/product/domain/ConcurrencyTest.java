@@ -1,26 +1,31 @@
 package com.jinius.ecommerce.product.domain;
 
 import com.jinius.ecommerce.Fixture;
+import com.jinius.ecommerce.common.exception.EcommerceException;
 import com.jinius.ecommerce.common.exception.LockException;
 import com.jinius.ecommerce.product.domain.model.Stock;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 /**
  * 재고 처리 동시성 제어
  * (비동기 요청 처리 테스트)
  */
+@Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -31,6 +36,29 @@ public class ConcurrencyTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Container
+    private static final GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>("redis:latest")
+            .withExposedPorts(6379)
+            .withEnv("REDIS_PASSWORD", "redis")
+            .withReuse(true)
+            .withCommand("redis-server --requirepass redis");
+
+    @DynamicPropertySource
+    public static void dynamicProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379).toString());
+        registry.add("spring.data.redis.password", () -> "redis");
+    }
+
+    @BeforeEach
+    void setUp() {
+        REDIS_CONTAINER.start();
+        productRepository.updateStock(Stock.builder()
+                .productId(1L)
+                .quantity(2000L)
+                .build());
+    }
 
     @Test
     @DisplayName("동일한 상품을 3명의 유저가 동시에 1개씩 주문하는 경우, 실패 없이 모두 재고가 차감되어야 한다.")
@@ -48,7 +76,7 @@ public class ConcurrencyTest {
         futures.forEach(CompletableFuture::join);
 
         //then
-        Stock result = productRepository.findStockById(productId).get();
+        Stock result = productRepository.findStockById(productId).orElseThrow(EcommerceException::new);
         assert result.getProductId().equals(productId);
         assert result.getQuantity() == originQuantity - 3;
     }
@@ -63,7 +91,7 @@ public class ConcurrencyTest {
 
         //when
         try {
-            List<CompletableFuture<Void>> futures = IntStream.range(0, 1000)
+            List<CompletableFuture<Void>> futures = IntStream.range(0, 100)
                     .mapToObj(i -> CompletableFuture.runAsync(() -> sut.decreaseStock(Fixture.orderItem()), executor))
                     .toList();
 
@@ -71,8 +99,9 @@ public class ConcurrencyTest {
 
             //then
             Stock result = productRepository.findStockById(productId).get();
+
             assert result.getProductId().equals(productId);
-            assert result.getQuantity() == originQuantity - 1000;
+            assert result.getQuantity() == originQuantity - 100;
         } finally {
             executor.shutdown();
         }

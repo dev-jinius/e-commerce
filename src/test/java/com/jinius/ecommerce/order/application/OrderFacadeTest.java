@@ -1,13 +1,13 @@
 package com.jinius.ecommerce.order.application;
 
 import com.jinius.ecommerce.Fixture;
+import com.jinius.ecommerce.IntegrationTestSupport;
 import com.jinius.ecommerce.common.exception.EcommerceException;
 import com.jinius.ecommerce.common.exception.ErrorCode;
 import com.jinius.ecommerce.order.api.dto.OrderItemRequest;
 import com.jinius.ecommerce.order.api.dto.OrderRequest;
 import com.jinius.ecommerce.order.domain.OrderService;
 import com.jinius.ecommerce.order.domain.model.Order;
-import com.jinius.ecommerce.order.domain.model.OrderItemStatus;
 import com.jinius.ecommerce.order.domain.model.OrderSheet;
 import com.jinius.ecommerce.order.domain.model.OrderStatus;
 import com.jinius.ecommerce.payment.domain.model.Payment;
@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -35,10 +36,11 @@ import static org.mockito.Mockito.verify;
 /**
  * 주문 통합 테스트
  */
+@Testcontainers
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-public class OrderFacadeTest {
+public class OrderFacadeTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderFacade sut;
